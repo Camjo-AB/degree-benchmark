@@ -19,6 +19,6 @@ The following are the tested workloads divided over two message brokers under te
 |:--------------------------------------|:-------:|:-----------------:|----------------------------------:|
 | 1-topic-1-partition-1kb               | Working |         8         | Works no matter number of workers |
 | 1-topic-100-partitions-1kb-4p-4c-200k | Working |         8         |         Work by 8 default workers |
-|                                       |         |                   |                                   | 
+|                                       |         |                   |                                   |
 |                                       |         |                   |                                   |
 

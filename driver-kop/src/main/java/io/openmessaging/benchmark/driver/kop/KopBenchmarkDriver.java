@@ -35,6 +35,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -199,6 +200,15 @@ public class KopBenchmarkDriver implements BenchmarkDriver {
         } else {
             throw new IllegalArgumentException("consumerType " + config.consumerType + " is invalid");
         }
+    }
+
+    @Override
+    public CompletableFuture<BenchmarkConsumer> createConsumer(
+            String topic,
+            String subscriptionName,
+            Optional<Integer> partition,
+            ConsumerCallback consumerCallback) {
+        return null;
     }
 
     @Override

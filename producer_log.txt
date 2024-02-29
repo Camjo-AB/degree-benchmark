@@ -1,3 +1,17 @@
+====
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+====
+
 11:19:13.584 [main] INFO log - Logging initialized @38908ms to org.eclipse.jetty.util.log.Slf4jLog
 11:19:14.972 [main] INFO Server - jetty-9.4.42.v20210604; built: 2021-06-04T17:33:38.939Z; git: 5cd5e6d2375eeab146813b0de9f19eda6ab6e6cb; jvm 11.0.16+8
 11:19:15.819 [main] INFO ContextHandler - Started o.e.j.s.ServletContextHandler@71ae31b0{/,null,AVAILABLE}

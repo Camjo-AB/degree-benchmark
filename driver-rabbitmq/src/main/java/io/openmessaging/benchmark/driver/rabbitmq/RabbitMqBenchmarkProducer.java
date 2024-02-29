@@ -15,53 +15,57 @@ package io.openmessaging.benchmark.driver.rabbitmq;
 
 
 import com.rabbitmq.client.AMQP.BasicProperties;
-import com.rabbitmq.client.AlreadyClosedException;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConfirmListener;
 import io.openmessaging.benchmark.driver.BenchmarkProducer;
+import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.TimeUnit;
 
 public class RabbitMqBenchmarkProducer implements BenchmarkProducer {
-
-    private static final Logger log = LoggerFactory.getLogger(RabbitMqBenchmarkProducer.class);
 
     private final Channel channel;
     private final String exchange;
     private final ConfirmListener listener;
-    /** To record msg and it's future structure. */
-    volatile SortedSet<Long> ackSet = Collections.synchronizedSortedSet(new TreeSet<>());
+    /** To record msg and it's future structure. * */
+    volatile SortedSet<Long> ackSet = Collections.synchronizedSortedSet(new TreeSet<Long>());
 
     private final ConcurrentHashMap<Long, CompletableFuture<Void>> futureConcurrentHashMap =
             new ConcurrentHashMap<>();
-    private final boolean messagePersistence;
+    private boolean messagePersistence = false;
+    private RoutingKeyGenerator routingKeyGenerator;
 
-    public RabbitMqBenchmarkProducer(Channel channel, String exchange, boolean messagePersistence) {
+    public RabbitMqBenchmarkProducer(
+            Channel channel,
+            String exchange,
+            boolean messagePersistence,
+            RoutingKeyGenerator routingKeyGenerator)
+            throws IOException {
         this.channel = channel;
         this.exchange = exchange;
         this.messagePersistence = messagePersistence;
+        this.routingKeyGenerator = routingKeyGenerator;
         this.listener =
                 new ConfirmListener() {
                     @Override
-                    public void handleNack(long deliveryTag, boolean multiple) {
+                    public void handleNack(long deliveryTag, boolean multiple) throws IOException {
                         if (multiple) {
                             SortedSet<Long> treeHeadSet = ackSet.headSet(deliveryTag + 1);
                             synchronized (ackSet) {
-                                for (Iterator<Long> iterator = treeHeadSet.iterator(); iterator.hasNext(); ) {
-                                    long value = iterator.next();
+                                for (Iterator iterator = treeHeadSet.iterator(); iterator.hasNext(); ) {
+                                    long value = (long) iterator.next();
                                     iterator.remove();
                                     CompletableFuture<Void> future = futureConcurrentHashMap.get(value);
                                     if (future != null) {
-                                        future.completeExceptionally(
-                                                new RuntimeException("Message was negatively acknowledged"));
+                                        Exception nullexception = new Exception();
+                                        future.completeExceptionally(nullexception);
                                         futureConcurrentHashMap.remove(value);
                                     }
                                 }
@@ -71,8 +75,8 @@ public class RabbitMqBenchmarkProducer implements BenchmarkProducer {
                         } else {
                             CompletableFuture<Void> future = futureConcurrentHashMap.get(deliveryTag);
                             if (future != null) {
-                                future.completeExceptionally(
-                                        new RuntimeException("Message was negatively acknowledged"));
+                                Exception nullexception = new Exception();
+                                future.completeExceptionally(nullexception);
                                 futureConcurrentHashMap.remove(deliveryTag);
                             }
                             ackSet.remove(deliveryTag);
@@ -80,7 +84,7 @@ public class RabbitMqBenchmarkProducer implements BenchmarkProducer {
                     }
 
                     @Override
-                    public void handleAck(long deliveryTag, boolean multiple) {
+                    public void handleAck(long deliveryTag, boolean multiple) throws IOException {
                         if (multiple) {
                             SortedSet<Long> treeHeadSet = ackSet.headSet(deliveryTag + 1);
                             synchronized (ackSet) {
@@ -108,11 +112,9 @@ public class RabbitMqBenchmarkProducer implements BenchmarkProducer {
 
     @Override
     public void close() throws Exception {
-        try {
+        if (channel.isOpen()) {
             channel.removeConfirmListener(listener);
             channel.close();
-        } catch (AlreadyClosedException e) {
-            log.warn("Channel already closed", e);
         }
     }
 
@@ -120,7 +122,15 @@ public class RabbitMqBenchmarkProducer implements BenchmarkProducer {
 
     @Override
     public CompletableFuture<Void> sendAsync(Optional<String> key, byte[] payload) {
-        BasicProperties.Builder builder = defaultProperties.builder().timestamp(new Date());
+        Instant currentTime = Instant.now();
+        long currentTimeNanos =
+                TimeUnit.SECONDS.toNanos(currentTime.getEpochSecond()) + currentTime.getNano();
+        BasicProperties.Builder builder =
+                defaultProperties
+                        .builder()
+                        .headers(
+                                Collections.singletonMap(
+                                        RabbitMqBenchmarkDriver.TIMESTAMP_HEADER, currentTimeNanos));
         if (messagePersistence) {
             builder.deliveryMode(2);
         }
@@ -130,7 +140,7 @@ public class RabbitMqBenchmarkProducer implements BenchmarkProducer {
         ackSet.add(msgId);
         futureConcurrentHashMap.putIfAbsent(msgId, future);
         try {
-            channel.basicPublish(exchange, key.orElse(""), props, payload);
+            channel.basicPublish(exchange, routingKeyGenerator.next(), props, payload);
         } catch (Exception e) {
             future.completeExceptionally(e);
         }

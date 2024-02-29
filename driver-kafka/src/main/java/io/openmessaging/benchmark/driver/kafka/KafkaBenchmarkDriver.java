@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import org.apache.bookkeeper.stats.StatsLogger;
@@ -137,6 +138,15 @@ public class KafkaBenchmarkDriver implements BenchmarkDriver {
             future.completeExceptionally(t);
             return future;
         }
+    }
+
+    @Override
+    public CompletableFuture<BenchmarkConsumer> createConsumer(
+            String topic,
+            String subscriptionName,
+            Optional<Integer> partition,
+            ConsumerCallback consumerCallback) {
+        return null;
     }
 
     @Override

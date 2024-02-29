@@ -25,6 +25,7 @@ import io.openmessaging.benchmark.driver.ConsumerCallback;
 import io.openmessaging.benchmark.driver.redis.client.RedisClientConfig;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import org.apache.bookkeeper.stats.StatsLogger;
@@ -77,6 +78,15 @@ public class RedisBenchmarkDriver implements BenchmarkDriver {
         return CompletableFuture.completedFuture(
                 new RedisBenchmarkConsumer(
                         consumerId, topic, subscriptionName, jedisPool, consumerCallback));
+    }
+
+    @Override
+    public CompletableFuture<BenchmarkConsumer> createConsumer(
+            String topic,
+            String subscriptionName,
+            Optional<Integer> partition,
+            ConsumerCallback consumerCallback) {
+        return null;
     }
 
     private void setupJedisConn() {

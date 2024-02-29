@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -180,6 +181,15 @@ public class JMSBenchmarkDriver implements BenchmarkDriver {
             res.completeExceptionally(err);
             return res;
         }
+    }
+
+    @Override
+    public CompletableFuture<BenchmarkConsumer> createConsumer(
+            String topic,
+            String subscriptionName,
+            Optional<Integer> partition,
+            ConsumerCallback consumerCallback) {
+        return null;
     }
 
     @Override

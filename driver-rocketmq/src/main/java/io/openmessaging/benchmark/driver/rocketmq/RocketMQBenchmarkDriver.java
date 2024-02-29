@@ -27,6 +27,7 @@ import io.openmessaging.benchmark.driver.rocketmq.client.RocketMQClientConfig;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -228,6 +229,15 @@ public class RocketMQBenchmarkDriver implements BenchmarkDriver {
         }
 
         return CompletableFuture.completedFuture(new RocketMQBenchmarkConsumer(rmqConsumer));
+    }
+
+    @Override
+    public CompletableFuture<BenchmarkConsumer> createConsumer(
+            String topic,
+            String subscriptionName,
+            Optional<Integer> partition,
+            ConsumerCallback consumerCallback) {
+        return null;
     }
 
     public boolean isAclEnabled() {
