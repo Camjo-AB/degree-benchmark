@@ -1,0 +1,67 @@
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+{{- if and .Values.rbac.create .Values.createAggregateRoles -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: strimzi-admin
+  labels:
+    app: {{ template "strimzi.name" . }}
+    chart: {{ template "strimzi.chart" . }}
+    component: entity-operator-role
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    # Add these permissions to the "admin" and "edit" default roles.
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+rules:
+  - apiGroups:
+      - "kafka.strimzi.io"
+    resources:
+      - kafkas
+      - kafkaconnects
+      - kafkaconnects/scale
+      - kafkamirrormakers
+      - kafkamirrormakers/scale
+      - kafkausers
+      - kafkatopics
+      - kafkabridges
+      - kafkabridges/scale
+      - kafkaconnectors
+      - kafkaconnectors/scale
+      - kafkamirrormaker2s
+      - kafkamirrormaker2s/scale
+      - kafkarebalances
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - patch
+      - update
+  - apiGroups:
+      - "core.strimzi.io"
+    resources:
+      - strimzipodsets
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - patch
+      - update
+{{- end -}}
