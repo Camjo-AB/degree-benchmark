@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import org.apache.bookkeeper.stats.StatsLogger;
 import org.apache.commons.configuration.ConfigurationException;
@@ -132,15 +131,6 @@ public class DlogBenchmarkDriver implements BenchmarkDriver {
                             }
                         })
                 .thenApply(dlm -> new DlogBenchmarkConsumer(dlm, consumerCallback));
-    }
-
-    @Override
-    public CompletableFuture<BenchmarkConsumer> createConsumer(
-            String topic,
-            String subscriptionName,
-            Optional<Integer> partition,
-            ConsumerCallback consumerCallback) {
-        return null;
     }
 
     @Override

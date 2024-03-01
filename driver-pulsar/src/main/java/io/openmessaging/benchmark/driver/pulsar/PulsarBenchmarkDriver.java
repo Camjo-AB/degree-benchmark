@@ -32,7 +32,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -215,15 +214,6 @@ public class PulsarBenchmarkDriver implements BenchmarkDriver {
                         __ ->
                                 new PulsarBenchmarkConsumer(
                                         futures.stream().map(CompletableFuture::join).collect(Collectors.toList())));
-    }
-
-    @Override
-    public CompletableFuture<BenchmarkConsumer> createConsumer(
-            String topic,
-            String subscriptionName,
-            Optional<Integer> partition,
-            ConsumerCallback consumerCallback) {
-        return null;
     }
 
     CompletableFuture<Consumer<ByteBuffer>> createInternalConsumer(

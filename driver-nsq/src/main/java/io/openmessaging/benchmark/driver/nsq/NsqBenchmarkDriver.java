@@ -27,7 +27,6 @@ import io.openmessaging.benchmark.driver.BenchmarkProducer;
 import io.openmessaging.benchmark.driver.ConsumerCallback;
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import org.apache.bookkeeper.stats.StatsLogger;
 import org.slf4j.Logger;
@@ -91,15 +90,6 @@ public class NsqBenchmarkDriver implements BenchmarkDriver {
         log.info("start a nsq consumer");
 
         return CompletableFuture.completedFuture(new NsqBenchmarkConsumer(nsqConsumer));
-    }
-
-    @Override
-    public CompletableFuture<BenchmarkConsumer> createConsumer(
-            String topic,
-            String subscriptionName,
-            Optional<Integer> partition,
-            ConsumerCallback consumerCallback) {
-        return null;
     }
 
     @Override

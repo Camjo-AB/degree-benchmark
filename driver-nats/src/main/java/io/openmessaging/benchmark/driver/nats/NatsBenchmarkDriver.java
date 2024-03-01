@@ -38,7 +38,6 @@ import io.openmessaging.benchmark.driver.ConsumerCallback;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import org.apache.bookkeeper.stats.StatsLogger;
 import org.slf4j.Logger;
@@ -146,15 +145,6 @@ public class NatsBenchmarkDriver implements BenchmarkDriver {
             f.completeExceptionally(e);
             return f;
         }
-    }
-
-    @Override
-    public CompletableFuture<BenchmarkConsumer> createConsumer(
-            String topic,
-            String subscriptionName,
-            Optional<Integer> partition,
-            ConsumerCallback consumerCallback) {
-        return null;
     }
 
     @Override

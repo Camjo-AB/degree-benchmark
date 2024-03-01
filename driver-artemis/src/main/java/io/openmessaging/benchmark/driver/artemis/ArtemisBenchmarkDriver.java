@@ -24,7 +24,6 @@ import io.openmessaging.benchmark.driver.BenchmarkProducer;
 import io.openmessaging.benchmark.driver.ConsumerCallback;
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import org.apache.activemq.artemis.api.core.ActiveMQException;
@@ -125,15 +124,6 @@ public class ArtemisBenchmarkDriver implements BenchmarkDriver {
                         });
 
         return future;
-    }
-
-    @Override
-    public CompletableFuture<BenchmarkConsumer> createConsumer(
-            String topic,
-            String subscriptionName,
-            Optional<Integer> partition,
-            ConsumerCallback consumerCallback) {
-        return null;
     }
 
     @Override

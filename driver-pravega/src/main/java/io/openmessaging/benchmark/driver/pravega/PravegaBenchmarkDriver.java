@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import org.apache.bookkeeper.stats.StatsLogger;
 import org.slf4j.Logger;
@@ -155,15 +154,6 @@ public class PravegaBenchmarkDriver implements BenchmarkDriver {
                         readerGroupManager,
                         config.includeTimestampInEvent);
         return CompletableFuture.completedFuture(consumer);
-    }
-
-    @Override
-    public CompletableFuture<BenchmarkConsumer> createConsumer(
-            String topic,
-            String subscriptionName,
-            Optional<Integer> partition,
-            ConsumerCallback consumerCallback) {
-        return null;
     }
 
     private void deleteTopics() {

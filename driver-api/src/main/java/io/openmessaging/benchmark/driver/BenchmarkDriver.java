@@ -122,11 +122,8 @@ public interface BenchmarkDriver extends AutoCloseable {
                 .thenApply(v -> futures.stream().map(CompletableFuture::join).collect(toList()));
     }
 
-    CompletableFuture<BenchmarkConsumer> createConsumer(
-            String topic,
-            String subscriptionName,
-            Optional<Integer> partition,
-            ConsumerCallback consumerCallback);
+    CompletableFuture<BenchmarkConsumer> createConsumer(String topic, String subscriptionName,
+                                                        Optional<Integer> partition, ConsumerCallback consumerCallback);
 
     @Value
     class TopicInfo {

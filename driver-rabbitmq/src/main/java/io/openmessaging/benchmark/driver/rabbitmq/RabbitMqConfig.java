@@ -13,21 +13,43 @@
  */
 package io.openmessaging.benchmark.driver.rabbitmq;
 
+import static io.openmessaging.benchmark.driver.rabbitmq.RabbitMqConfig.QueueType.CLASSIC;
 
-import com.rabbitmq.client.BuiltinExchangeType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class RabbitMqConfig {
-    public enum QueueType {
-        CLASSIC,
-        QUORUM
-    }
 
-    public String[] brokers;
+    public List<String> amqpUris = new ArrayList<>();
     public boolean messagePersistence = false;
-    public QueueType queueType = QueueType.CLASSIC;
-    public int routingKeyLength = 7;
-    public String topicPrefix = "test-topic";
-    public BuiltinExchangeType exchangeType = BuiltinExchangeType.DIRECT;
-    public boolean exclusive = false;
-    public boolean singleNode = false;
+    public QueueType queueType = CLASSIC;
+    public long producerCreationDelay = 100;
+    public int producerCreationBatchSize = 5;
+    public long consumerCreationDelay = 100;
+    public int consumerCreationBatchSize = 5;
+
+    public enum QueueType {
+        CLASSIC {
+            @Override
+            Map<String, Object> queueOptions() {
+                return Collections.emptyMap();
+            }
+        },
+        QUORUM {
+            @Override
+            Map<String, Object> queueOptions() {
+                return Collections.singletonMap("x-queue-type", "quorum");
+            }
+        },
+        STREAM {
+            @Override
+            Map<String, Object> queueOptions() {
+                return Collections.singletonMap("x-queue-type", "stream");
+            }
+        };
+
+        abstract Map<String, Object> queueOptions();
+    }
 }
