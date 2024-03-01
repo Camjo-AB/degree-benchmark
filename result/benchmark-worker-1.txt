@@ -1,0 +1,33 @@
+09:05:36.657 [main] INFO log - Logging initialized @7767ms to org.eclipse.jetty.util.log.Slf4jLog
+09:05:36.908 [main] INFO Server - jetty-9.4.42.v20210604; built: 2021-06-04T17:33:38.939Z; git: 5cd5e6d2375eeab146813b0de9f19eda6ab6e6cb; jvm 11.0.16+8
+09:05:37.022 [main] INFO ContextHandler - Started o.e.j.s.ServletContextHandler@71ae31b0{/,null,AVAILABLE}
+09:05:37.081 [main] INFO AbstractConnector - Started ServerConnector@7fc6de5b{HTTP/1.1, (http/1.1)}{0.0.0.0:8081}
+09:05:37.082 [main] INFO Server - Started @8202ms
+09:05:37.091 [main] INFO PrometheusMetricsProvider - Started Prometheus stats endpoint at 0.0.0.0:8081
+09:05:37.245 [main] INFO BenchmarkWorker - Starting benchmark with config: {
+  "httpPort" : 8080,
+  "statsPort" : 8081
+}
+09:05:37.396 [main] INFO Javalin - 
+ _________________________________________
+|        _                  _ _           |
+|       | | __ ___   ____ _| (_)_ __      |
+|    _  | |/ _` \ \ / / _` | | | '_ \     |
+|   | |_| | (_| |\ V / (_| | | | | | |    |
+|    \___/ \__,_| \_/ \__,_|_|_|_| |_|    |
+|_________________________________________|
+|                                         |
+|    https://javalin.io/documentation     |
+|_________________________________________|
+09:05:37.410 [main] INFO Javalin - Starting Javalin ...
+09:05:37.432 [main] INFO Server - jetty-9.4.42.v20210604; built: 2021-06-04T17:33:38.939Z; git: 5cd5e6d2375eeab146813b0de9f19eda6ab6e6cb; jvm 11.0.16+8
+09:05:37.452 [main] INFO session - DefaultSessionIdManager workerName=node0
+09:05:37.453 [main] INFO session - No SessionScavenger set, using defaults
+09:05:37.456 [main] INFO session - node0 Scavenging every 660000ms
+09:05:37.458 [main] INFO ContextHandler - Started i.j.e.j.@6cc0bcf6{/,null,AVAILABLE}
+09:05:37.459 [main] INFO ContextHandler - Started o.e.j.s.ServletContextHandler@32f61a31{/,null,AVAILABLE}
+09:05:37.462 [main] INFO AbstractConnector - Started ServerConnector@324c64cd{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+09:05:37.463 [main] INFO Server - Started @8582ms
+09:05:37.463 [main] INFO EmbeddedServer - Jetty is listening on: [http://localhost:8080]
+09:05:37.464 [main] INFO Javalin - Javalin has started \o/
+09:14:36.063 [qtp748006558-25] INFO WorkerHandler - Stop All

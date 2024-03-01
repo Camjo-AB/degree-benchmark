@@ -26,24 +26,26 @@ echo "password: $password"
 
 kubectl create secret docker-registry regcred --docker-server="https://index.docker.io/v1/" --docker-username="$username" --docker-password="$password" --docker-email="gustav.normelli@gmail.com"
 
+
+# Misilanious commands minikube
+
+kubectl config get-contexts
+
 kubectl cp driver-rabbitmq/new_rabbitmq.yaml benchmark-driver:/benchmark/driver-rabbitmq
 
+### Access Benchmark driver CLI & run benchmark
 kubectl exec -ti benchmark-driver -- //bin/bash
 
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/1-topic-1-partitions-1kb.yaml
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/1-topic-100-partitions-1kb-4p-4c-200k.yaml
+
+### Get logs 
+kubectl logs benchmark-worker-7 > ./result/benchmark-worker-7.txt
+
+### Install benchmark application
 helm install benchmark ./deployment/kubernetes/helm/benchmark
 
 kubectl port-forward benchmark-worker-0 80:8080
-kubectl port-forward benchmark-worker-1 81:8080
-kubectl port-forward benchmark-worker-2 82:8080
-kubectl port-forward benchmark-worker-3 83:8080
-kubectl port-forward benchmark-worker-4 84:8080
-kubectl port-forward benchmark-worker-5 85:8080
-kubectl port-forward benchmark-worker-6 86:8080
-kubectl port-forward benchmark-worker-7 87:8080
-
-### Port-forward rabbitmq
-
-kubectl port-forward "service/definition" 15672
 
 ### Port-forward Kafka
 
@@ -55,9 +57,15 @@ kubectl port-forward controlcenter-0 9021:9021
 
 --drivers driver-rabbitmq/new_rabbitmq.yaml --workers http://localhost:8080,http://localhost:8080 workloads/1-topic-1-partition-1kb.yaml
 
-kubectl get rabbitmqcluster definition -ojsonpath='Name: {.status.admin.serviceReference.name} -- Namespace: {.status.admin.serviceReference.namespace}'
+# RabbitMQ
 
-### Access Rabbitmq
+### Install cluster operator and broker
+
+helm install my-release bitnami/rabbitmq-cluster-operator
+
+kubectl apply -f ./deployment/kubernetes/rabbitmq/definition.yaml
+
+### Authentication Rabbitmq
 
 password="$(kubectl get secret definition-default-user -o jsonpath='{.data.password}' | base64 --decode)"
 username="$(kubectl get secret definition-default-user -o jsonpath='{.data.username}' | base64 --decode)"
@@ -65,7 +73,9 @@ service="$(kubectl get service definition -o jsonpath='{.spec.clusterIP}')"
 
 echo "username: $username"
 
-kubectl config get-contexts
+### Port-forward management tool rabbitmq
+
+kubectl port-forward "service/definition" 15672
 
 # Azure
 
