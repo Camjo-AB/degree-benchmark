@@ -29,9 +29,16 @@ kubectl create secret docker-registry regcred --docker-server="https://index.doc
 
 # Misilanious commands minikube
 
+### Get namespaces
 kubectl config get-contexts
 
+### Copy file from pod to local
 kubectl cp driver-rabbitmq/new_rabbitmq.yaml benchmark-driver:/benchmark/driver-rabbitmq
+
+### Check and Change current namespace
+
+kubectl get namespaces
+kubectl config set-context --current --namespace=<insert-namespace-name-here>
 
 ### Access Benchmark driver CLI & run benchmark
 kubectl exec -ti benchmark-driver -- //bin/bash
@@ -133,20 +140,6 @@ kubectl exec -ti benchmark-driver -- //bin/bash
 
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/1-topic-1-partition-1kb.yaml
 
-### Create and Delete kafka cluster
-
-kubectl apply -f ./deployment/kubernetes/kafka/kafka-persistent.yaml -n kafka
-kubectl delete -f ./deployment/kubernetes/kafka/kafka-persistent.yaml -n kafka
-
-### Watch Topics in Kafka
-
-kubectl exec -ti my-cluster-kafka-0 -- //bin/bash
-bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
-
-### Install bridge
-
-kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
-
 ### Install Strimzi Operator
 
 kubectl create namespace kafka
@@ -157,3 +150,17 @@ kubectl logs deployment/strimzi-cluster-operator -n kafka -f
 kubectl apply -f https://strimzi.io/examples/latest/kafka/kafka-persistent-single.yaml -n kafka
 
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
+
+### Install bridge
+
+kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
+
+### Create and Delete kafka cluster
+
+kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
+kubectl delete -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
+
+### Watch Topics in Kafka
+
+kubectl exec -ti my-cluster-kafka-0 -- //bin/bash
+bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
