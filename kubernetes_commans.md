@@ -11,7 +11,7 @@ $ kubectl get pods -o wide
 minikube start -p kafka --cpus=4 --memory=4096
 minikube start -p kafka --cpus=4 --memory=6144
 
-Swith by:
+Switch by:
 minikube profile kafka
 
 ### Creat secrete
@@ -26,7 +26,6 @@ echo "password: $password"
 
 kubectl create secret docker-registry regcred --docker-server="https://index.docker.io/v1/" --docker-username="$username" --docker-password="$password" --docker-email="gustav.normelli@gmail.com"
 
-
 # Misilanious commands minikube
 
 kubectl config get-contexts
@@ -34,15 +33,18 @@ kubectl config get-contexts
 kubectl cp driver-rabbitmq/new_rabbitmq.yaml benchmark-driver:/benchmark/driver-rabbitmq
 
 ### Access Benchmark driver CLI & run benchmark
+
 kubectl exec -ti benchmark-driver -- //bin/bash
 
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/1-topic-1-partitions-1kb.yaml
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/1-topic-100-partitions-1kb-4p-4c-200k.yaml
 
-### Get logs 
+### Get logs
+
 kubectl logs benchmark-worker-7 > ./result/benchmark-worker-7.txt
 
 ### Install benchmark application
+
 helm install benchmark ./deployment/kubernetes/helm/benchmark
 
 kubectl port-forward benchmark-worker-0 80:8080
