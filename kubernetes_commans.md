@@ -206,7 +206,7 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --f
 
 kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
 
-### Create and Delete kafka cluster
+### Create and Delete Kafka cluster
 
 kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
 kubectl delete -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka

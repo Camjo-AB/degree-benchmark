@@ -15,10 +15,10 @@ The following are the tested workloads divided over two message brokers under te
 
 ### Kafka
 
-| Workload                              | Status  | # pods in cluster |                           Comment |
-|:--------------------------------------|:-------:|:-----------------:|----------------------------------:|
-| 1-topic-1-partition-1kb               | Working |         8         | Works no matter number of workers |
-| 1-topic-100-partitions-1kb-4p-4c-200k | Working |         8         |         Work by 8 default workers |
-|                                       |         |                   |                                   |
-|                                       |         |                   |                                   |
-
+| Workload                                                                          | Status  | # pods in cluster |                               Comment |
+|:----------------------------------------------------------------------------------|:-------:|:----------------:|--------------------------------------:|
+| 1-topic-1-partition-1kb                                                           | Working |         8        |     Works no matter number of workers |
+| 1-topic-100-partitions-1kb-4p-4c-200k                                             | Working |         8        |             Work by 8 default workers |
+| max-rate-20-topics-1-partition-1kb.yaml                                           |         |                  |                                       |
+| max-rate-1-topic-16-partitions-1kb.yaml                                           |         |                  |                                       |
+| max-rate-1-topic-1-partition-4p-1c-1kb.yaml                                       |         |                  |                                       |
