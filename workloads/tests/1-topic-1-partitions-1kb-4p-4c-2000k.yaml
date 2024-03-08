@@ -12,12 +12,21 @@
 # limitations under the License.
 #
 
-apiVersion: kafka.strimzi.io/v1beta2
-kind: KafkaBridge
-metadata:
-  name: my-bridge
-spec:
-  replicas: 1
-  bootstrapServers: my-cluster-kafka-bootstrap:9092
-  http:
-    port: 8008
+name: 2000k rate 4 producers and 4 consumers on 1 topic / 1 partition
+
+topics: 1
+partitionsPerTopic: 1
+
+keyDistributor: "NO_KEY"
+messageSize: 1024
+payloadFile: "payload/payload-1Kb.data"
+
+subscriptionsPerTopic: 1
+consumerPerSubscription: 4
+producersPerTopic: 4
+
+# Discover max-sustainable rate
+producerRate: 2000000
+
+consumerBacklogSizeGB: 0
+testDurationMinutes: 15

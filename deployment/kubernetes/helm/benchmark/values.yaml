@@ -12,9 +12,9 @@
 # limitations under the License.
 #
 
-numWorkers: 4
+numWorkers: 8
 #image: gnormelli/benchmark:v2
-image: Degree.azurecr.io/benchmark:vkafka2
+image: Degree.azurecr.io/benchmark:main
 imagePullPolicy: Always
 workload: workloads/1-topic-1-partition-1kb.yaml
 driver: driver-rabbitmq/new_rabbitmq.yaml

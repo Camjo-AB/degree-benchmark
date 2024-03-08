@@ -18,7 +18,6 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import lombok.Value;
 import org.apache.bookkeeper.stats.StatsLogger;
@@ -121,9 +120,6 @@ public interface BenchmarkDriver extends AutoCloseable {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenApply(v -> futures.stream().map(CompletableFuture::join).collect(toList()));
     }
-
-    CompletableFuture<BenchmarkConsumer> createConsumer(String topic, String subscriptionName,
-                                                        Optional<Integer> partition, ConsumerCallback consumerCallback);
 
     @Value
     class TopicInfo {
