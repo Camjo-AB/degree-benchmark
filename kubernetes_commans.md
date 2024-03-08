@@ -155,17 +155,6 @@ helm push openmessaging-benchmark-0.0.1.tgz oci://$ACR_NAME.azurecr.io/helm
 
 helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 0.0.1
 
-### Copy the result from pod to current directory
-
-kubectl cp default/benchmark-driver:<sourcefile> <targetfile>
-
-Example:
-kubectl cp default/benchmark-driver:1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json 1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json
-
-### Generate Charts from result
-
-python bin/create_charts.py <chartfile>
-
 # RabbitMQ
 
 ----------------------------------------------
@@ -189,10 +178,6 @@ echo "username: $username"
 
 kubectl port-forward "service/definition" 15672
 
-### Run test for RabbitMQ
-
-bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb.yaml </br>
-bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb-4p-4c-50k.yaml
 
 # Kafka
 
@@ -205,13 +190,6 @@ kubectl create namespace <namespace>
 ### Set namespace
 
 kubectl config set-context --current --namespace <namespace>
-
-### Run Kafka driver
-
-kubectl exec -ti benchmark-driver -- //bin/bash
-
-bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/1-topic-1-partition-1kb.yaml
-bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/1-topic-100-partitions-1kb-4p-4c-200k.yaml
 
 ### Install Strimzi Operator
 
@@ -237,3 +215,31 @@ kubectl delete -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
 
 kubectl exec -ti my-cluster-kafka-0 -- //bin/bash
 bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
+
+
+# Tests
+
+----------------------------------------------------
+### Run test for RabbitMQ
+
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb.yaml </br>
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb-4p-4c-50k.yaml
+
+### Run Kafka driver
+
+kubectl exec -ti benchmark-driver -- //bin/bash </br>
+
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/1-topic-1-partition-1kb.yaml </br>
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/1-topic-100-partitions-1kb-4p-4c-200k.yaml
+
+
+### Copy the result from pod to current directory
+
+kubectl cp default/benchmark-driver:<sourcefile> <targetfile>
+
+Example:
+kubectl cp default/benchmark-driver:1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json 1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json
+
+### Generate Charts from result
+
+python bin/create_charts.py <chartfile>
