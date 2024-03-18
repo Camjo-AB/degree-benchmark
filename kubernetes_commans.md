@@ -68,36 +68,6 @@ kubectl port-forward controlcenter-0 9021:9021
 
 --drivers driver-rabbitmq/new_rabbitmq.yaml --workers http://localhost:8080,http://localhost:8080 workloads/1-topic-1-partition-1kb.yaml
 
-# Helm
-
-----------------------------------------------
-
-### Push Helm package to ACR
-
-helm package . </br>
-ACR_NAME=Degree </br>
-USER_NAME="00000000-0000-0000-0000-000000000000" </br>
-PASSWORD=$(az acr login --name $ACR_NAME --expose-token --output tsv --query accessToken)
-
-helm registry login $ACR_NAME.azurecr.io --username $USER_NAME --password $PASSWORD
-
-helm push openmessaging-benchmark-0.0.1.tgz oci://$ACR_NAME.azurecr.io/helm
-
-### Install helm chart from repo
-
-helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 0.0.1
-
-### Copy the result from pod to current directory
-
-kubectl cp default/benchmark-driver:<sourcefile> <targetfile>
-
-Example:
-kubectl cp default/benchmark-driver:1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json 1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json
-
-### Generate Charts from result
-
-python bin/create_charts.py <chartfile>
-
 # Azure Kubernetes Services
 
 ----------------------------------------------
@@ -126,7 +96,9 @@ az aks nodepool list -g degree-test-group --cluster-name degree_v1
 ----------------------------------------------
 
 ### Login Azure
-az login </br>
+az login
+
+### Login Azure Container Registry
 az acr login --name degree
 
 ### Docker login ACR 
@@ -139,15 +111,16 @@ docker push Degree.azurecr.io/benchmark:main
 # Helm
 
 ----------------------------------------------
-
-### Push Helm package to ACR
-
-helm package ./deployment/kubernetes/helm/benchmark/ </br>
+### Login to Helm repo on ACR
 ACR_NAME=Degree </br>
 USER_NAME="00000000-0000-0000-0000-000000000000" </br>
 PASSWORD=$(az acr login --name $ACR_NAME --expose-token --output tsv --query accessToken)
 
 helm registry login $ACR_NAME.azurecr.io --username $USER_NAME --password $PASSWORD
+
+### Create and Push Helm package to ACR
+
+helm package ./deployment/kubernetes/helm/benchmark/ </br>
 
 helm push openmessaging-benchmark-0.0.1.tgz oci://$ACR_NAME.azurecr.io/helm
 
@@ -158,6 +131,9 @@ helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark -
 # RabbitMQ
 
 ----------------------------------------------
+### Set namespace
+
+kubectl config set-context --current --namespace default
 
 ### Install cluster operator and broker
 
@@ -185,11 +161,11 @@ kubectl port-forward "service/definition" 15672
 
 ### Create a namespace
 
-kubectl create namespace <namespace>
+kubectl create namespace kafka
 
 ### Set namespace
 
-kubectl config set-context --current --namespace <namespace>
+kubectl config set-context --current --namespace kafka
 
 ### Install Strimzi Operator
 
@@ -198,15 +174,13 @@ kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 
 kubectl logs deployment/strimzi-cluster-operator -n kafka -f
 
-kubectl apply -f https://strimzi.io/examples/latest/kafka/kafka-persistent-single.yaml -n kafka
-
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
 
 ### Install bridge
 
 kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
 
-### Create and Delete Kafka cluster
+### Create and Delete Kafka Ephemeral cluster
 
 kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
 kubectl delete -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
@@ -220,6 +194,11 @@ bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
 # Tests
 
 ----------------------------------------------------
+
+### Access Benchmark driver CLI
+
+kubectl exec -ti benchmark-driver -- //bin/bash
+
 ### Run test for RabbitMQ
 
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb.yaml </br>
@@ -235,7 +214,8 @@ bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WOR
 
 ### Copy the result from pod to current directory
 
-kubectl cp default/benchmark-driver:<sourcefile> <targetfile>
+kubectl cp default/benchmark-driver:<sourcefile> <targetfile> <\br>
+kubectl cp kafka/benchmark-driver:<sourcefile> <targetfile>
 
 Example:
 kubectl cp default/benchmark-driver:1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json 1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json
