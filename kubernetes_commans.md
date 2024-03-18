@@ -176,13 +176,17 @@ kubectl logs deployment/strimzi-cluster-operator -n kafka -f
 
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
 
+### Delete Strimzi Operator
+
+kubectl delete -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
+
 ### Install bridge
 
 kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
 
 ### Create and Delete Kafka Ephemeral cluster
 
-kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
+kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka </br>
 kubectl delete -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
 
 ### Watch Topics in Kafka
@@ -214,7 +218,7 @@ bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WOR
 
 ### Copy the result from pod to current directory
 
-kubectl cp default/benchmark-driver:<sourcefile> <targetfile> <\br>
+kubectl cp default/benchmark-driver:<sourcefile> <targetfile> </br>
 kubectl cp kafka/benchmark-driver:<sourcefile> <targetfile>
 
 Example:
