@@ -184,6 +184,7 @@ kubectl logs deployment/strimzi-cluster-operator -n kafka -f
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
 
 ### Delete Strimzi Operator
+
 Deletes the all the resources connected to Kafka, including bridge, zookeeper and brokers. </br>
 
 kubectl delete -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka

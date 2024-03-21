@@ -68,7 +68,7 @@ The following are the tested workloads divided over two message brokers under te
 | 1-topic-100-partitions-1kb-4p-4c-100k.yaml  | Working |         8         |                                                                                                        |
 | TOPICS                                      |         |                   |                                                                                                        |
 | 100-topic-1kb-4p-4c-100k.yaml               | Working |         8         |                                                                                                        |
-| 200-topic-1kb-4p-4c-100k.yaml               |         |         8         |                                                                                                        |
-| 500-topic-1kb-4p-4c-100k.yaml               |         |         8         |                                                                                                        |
-| 1000-topic-1kb-4p-4c-100k.yaml              |         |         8         |                                                                                                        |
-
+| 80-topic-1kb-4p-4c-100k.yaml                |         |         8         |                                                                                                        |
+| 60-topic-1kb-4p-4c-100k.yaml                |         |         8         |                                                                                                        |
+| 40-topic-1kb-4p-4c-100k.yaml                |         |         8         |                                                                                                        |
+| 20-topic-1kb-4p-4c-100k.yaml                |         |         8         |                                                                                                        |
