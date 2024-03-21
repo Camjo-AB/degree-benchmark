@@ -12,9 +12,9 @@
 # limitations under the License.
 #
 
-name: 500k rate 4 producers and 4 consumers on 100 topic
+name: 100k rate 4 producers and 4 consumers on 200 topic
 
-topics: 100
+topics: 500
 partitionsPerTopic: 1
 
 messageSize: 1024
@@ -27,7 +27,7 @@ consumerPerSubscription: 4
 producersPerTopic: 4
 
 # Discover max-sustainable rate
-producerRate: 500000
+producerRate: 100000
 
 consumerBacklogSizeGB: 0
 testDurationMinutes: 5

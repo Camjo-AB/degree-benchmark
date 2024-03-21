@@ -29,6 +29,13 @@ spec:
         port: 9093
         type: internal
         tls: true
+    resources:
+      requests:
+        memory: "4Gi"  # Adjust based on your workload
+        cpu: "1"
+      limits:
+        memory: "6Gi"  # Adjust based on your workload
+        cpu: "2"
     config:
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3
@@ -37,11 +44,25 @@ spec:
       min.insync.replicas: 2
       inter.broker.protocol.version: "3.6"
     storage:
-      type: ephemeral
+      type: jbod
+      volumes:
+        - id: 0
+          type: persistent-claim
+          size: 20Gi
+          deleteClaim: false
   zookeeper:
     replicas: 3
     storage:
-      type: ephemeral
+      type: persistent-claim
+      size: 20Gi
+      deleteClaim: false
+    resources:
+      requests:
+        memory: "2Gi"  # Adjust based on your workubeckload
+        cpu: "0.5"
+      limits:
+        memory: "3Gi"  # Adjust based on your workload
+        cpu: "1"
   entityOperator:
     topicOperator: {}
     userOperator: {}

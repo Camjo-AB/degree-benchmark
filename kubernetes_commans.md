@@ -1,4 +1,3 @@
-
 ### Creat secrete
 
 kubectl create secret generic regcred --from-file=.dockerconfigjson="C:\Users\Gustav Normelli\.docker\config.json" --type=kubernetes.io/dockerconfigjson
@@ -21,6 +20,7 @@ minikube start -p kafka --cpus=4 --memory=4096
 minikube start -p kafka --cpus=4 --memory=6144
 
 ### Switch cluster on minikube
+
 minikube profile kafka
 
 ### Set context
@@ -96,22 +96,28 @@ az aks nodepool list -g degree-test-group --cluster-name degree_v1
 ----------------------------------------------
 
 ### Login Azure
+
 az login
 
 ### Login Azure Container Registry
+
 az acr login --name degree
 
-### Docker login ACR 
+### Docker login ACR
+
 docker login Degree.azurecr.io </br>
 Fill in username "Degree" and password from ACR Access Key </br>
 
 ### Push image to ACR
+
 docker push Degree.azurecr.io/benchmark:main
 
 # Helm
 
 ----------------------------------------------
+
 ### Login to Helm repo on ACR
+
 ACR_NAME=Degree </br>
 USER_NAME="00000000-0000-0000-0000-000000000000" </br>
 PASSWORD=$(az acr login --name $ACR_NAME --expose-token --output tsv --query accessToken)
@@ -131,6 +137,7 @@ helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark -
 # RabbitMQ
 
 ----------------------------------------------
+
 ### Set namespace
 
 kubectl config set-context --current --namespace default
@@ -142,7 +149,8 @@ helm install my-release bitnami/rabbitmq-cluster-operator
 kubectl apply -f ./deployment/kubernetes/rabbitmq/definition.yaml
 
 ### Pod Authentication to Rabbitmq
-All username and password needs to be added to new_rabbitmq.yaml file to make access possible for worker pods</br> 
+
+All username and password needs to be added to new_rabbitmq.yaml file to make access possible for worker pods</br>
 
 password="$(kubectl get secret definition-default-user -o jsonpath='{.data.password}' | base64 --decode)" </br>
 username="$(kubectl get secret definition-default-user -o jsonpath='{.data.username}' | base64 --decode)" </br>
@@ -153,7 +161,6 @@ echo "username: $username"
 ### Port-forward management tool rabbitmq
 
 kubectl port-forward "service/definition" 15672
-
 
 # Kafka
 
@@ -169,7 +176,7 @@ kubectl config set-context --current --namespace kafka
 
 ### Install Strimzi Operator
 
-kubectl create namespace kafka
+kubectl create namespace kafka </br>
 kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 
 kubectl logs deployment/strimzi-cluster-operator -n kafka -f
@@ -177,23 +184,30 @@ kubectl logs deployment/strimzi-cluster-operator -n kafka -f
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning
 
 ### Delete Strimzi Operator
+Deletes the all the resources connected to Kafka, including bridge, zookeeper and brokers. </br>
 
 kubectl delete -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
-
-### Install bridge
-
-kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
 
 ### Create and Delete Kafka Ephemeral cluster
 
 kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka </br>
 kubectl delete -f ./deployment/kubernetes/kafka/kafka-ephemeral.yaml -n kafka
 
+### Create and Delete Modified Kafka Ephemeral cluster
+
+This file is for testing to reduce effects of storage saturation </br>
+
+kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral-modified.yaml -n kafka </br>
+kubectl delete -f ./deployment/kubernetes/kafka/kafka-ephemeral-modified.yaml -n kafka
+
+### Install bridge
+
+kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
+
 ### Watch Topics in Kafka
 
 kubectl exec -ti my-cluster-kafka-0 -- //bin/bash
 bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
-
 
 # Tests
 
@@ -211,10 +225,9 @@ bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS wor
 ### Run Kafka driver
 
 kubectl exec -ti benchmark-driver -- //bin/bash </br>
-
-bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/1-topic-1-partition-1kb.yaml </br>
-bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/1-topic-100-partitions-1kb-4p-4c-200k.yaml
-
+Check directory and adjust command before running tests </br>
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-1-partition-1kb.yaml </br>
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-100-partitions-1kb-4p-4c-200k.yaml
 
 ### Copy the result from pod to current directory
 

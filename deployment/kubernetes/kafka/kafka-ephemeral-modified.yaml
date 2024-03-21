@@ -29,6 +29,13 @@ spec:
         port: 9093
         type: internal
         tls: true
+    resources:
+      requests:
+        memory: "4Gi"  # Adjust based on your workload
+        cpu: "1"
+      limits:
+        memory: "6Gi"  # Adjust based on your workload
+        cpu: "2"
     config:
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3
@@ -42,6 +49,13 @@ spec:
     replicas: 3
     storage:
       type: ephemeral
+    resources:
+      requests:
+        memory: "2Gi"  # Adjust based on your workload
+        cpu: "0.5"
+      limits:
+        memory: "3Gi"  # Adjust based on your workload
+        cpu: "1"
   entityOperator:
     topicOperator: {}
     userOperator: {}
