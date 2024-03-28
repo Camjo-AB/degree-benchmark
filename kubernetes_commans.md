@@ -240,4 +240,4 @@ kubectl cp default/benchmark-driver:1-topic-1-partition-1kb-RabbitMQ-2024-02-05-
 
 ### Generate Charts from result
 
-python bin/create_charts.py <chartfile>
+python workloads\result\create_charts.py <chartfile>

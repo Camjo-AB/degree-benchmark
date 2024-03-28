@@ -72,3 +72,4 @@ The following are the tested workloads divided over two message brokers under te
 | 60-topic-1kb-4p-4c-100k.yaml                | Working |         8         |                                                                                                        |
 | 40-topic-1kb-4p-4c-100k.yaml                | Working |         8         |                                                                                                        |
 | 20-topic-1kb-4p-4c-100k.yaml                | Working |         8         |                                                                                                        |
+
