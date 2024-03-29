@@ -113,20 +113,31 @@ def generate_markdown_table():
 def main():
     list_of_files = []
     directory = ''  # Initialize outside the loop to maintain the last seen directory
+    full_dir_path_test = ''
 
     parent_directory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    
+    test_directory = os.path.join(parent_directory, 'workloads', 'tests')
+    result_directory = os.path.join(parent_directory, 'run_and_analyse_tests', 'result')
+    start_read = False
+
     for line in fileinput.input(['tests.txt']):
         line = line.strip()  # Strip whitespace and newline characters
-        if line.startswith('*'):
-            directory = line[1:].strip()  # Remove '*' and trim spaces
-            full_dir_path = os.path.join(os.getcwd(), directory)
 
-            if not os.path.exists(full_dir_path):
-                os.makedirs(full_dir_path)
-        else:
+        if line.startswith('*'):
+            start_read = True
+            directory = line[1:].strip()  # Remove '*' and trim spaces
+            full_dir_path_test = os.path.join(test_directory, directory)
+            full_dir_path_result = os.path.join(result_directory, directory)
+
+            if not os.path.exists(full_dir_path_test):
+                os.makedirs(full_dir_path_test)
+
+            if not os.path.exists(full_dir_path_result):
+                os.makedirs(full_dir_path_result)
+
+        elif start_read == True:
             # Only append non-directory lines with the current directory
-            pair = (directory, line)
+            pair = (full_dir_path_test, line)
             list_of_files.append(pair)
 
     content = ""
