@@ -104,10 +104,10 @@ def generate_markdown_table():
     markdown_table = "\n".join(rows)
 
     # Optionally, write the markdown table to a file
-    with open('current_tests_table.md', 'w') as md_file:
+    with open('current_tests_table_log.md', 'w') as md_file:
         md_file.write(markdown_table)
 
-    print("Markdown table generated and saved to current_tests_table.md")
+    print("Markdown table generated and saved to current_tests_table_log.md")
 
 
 def main():
