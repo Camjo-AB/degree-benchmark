@@ -114,11 +114,14 @@ def main():
     list_of_files = []
     directory = ''  # Initialize outside the loop to maintain the last seen directory
 
+    parent_directory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    
     for line in fileinput.input(['tests.txt']):
         line = line.strip()  # Strip whitespace and newline characters
         if line.startswith('*'):
             directory = line[1:].strip()  # Remove '*' and trim spaces
             full_dir_path = os.path.join(os.getcwd(), directory)
+
             if not os.path.exists(full_dir_path):
                 os.makedirs(full_dir_path)
         else:
@@ -127,7 +130,7 @@ def main():
             list_of_files.append(pair)
 
     content = ""
-    with open('content.txt', 'r') as file:
+    with open('test_content.txt', 'r') as file:
         content = file.read()
 
     config = interpret_lines(list_of_files)

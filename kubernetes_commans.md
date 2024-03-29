@@ -224,8 +224,9 @@ bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS wor
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb-4p-4c-50k.yaml
 
 ### Run Kafka driver
-
+1. First get into the benchmark driver pod bash shell: </br>
 kubectl exec -ti benchmark-driver -- //bin/bash </br>
+
 Check directory and adjust command before running tests </br>
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-1-partition-1kb.yaml </br>
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-100-partitions-1kb-4p-4c-200k.yaml
