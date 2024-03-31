@@ -68,6 +68,13 @@ kubectl port-forward controlcenter-0 9021:9021
 
 --drivers driver-rabbitmq/new_rabbitmq.yaml --workers http://localhost:8080,http://localhost:8080 workloads/1-topic-1-partition-1kb.yaml
 
+# GitHub Workflow testing
+
+----------------------------------------------
+
+### Create Role based access control Azure
+
+
 # Azure Kubernetes Services
 
 ----------------------------------------------
@@ -210,7 +217,7 @@ kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
 kubectl exec -ti my-cluster-kafka-0 -- //bin/bash
 bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
 
-# Tests
+# Manual Tests
 
 ----------------------------------------------------
 
