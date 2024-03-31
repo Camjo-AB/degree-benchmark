@@ -36,8 +36,8 @@ permissions:
     id-token: write
     contents: read
 
-jobs:
-  build:
+jjobs:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
