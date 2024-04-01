@@ -81,6 +81,9 @@ jobs:
       - name: Install Helm Chart from ACR
         run: helm install benchmark oci://${{env.AZURE_CONTAINER_REGISTRY}}.azurecr.io/helm/openmessaging-benchmark --version 1.0.0
 
+      - name: Kubectl get all resources
+        run: kubectl get all
+        
 # This is where copy file from pod starts
 
 #      - name: Copy File from Pod
