@@ -73,9 +73,10 @@ jobs:
       - name: Set up AKS context (if using AKS)
         uses: azure/k8s-set-context@v1
         with:
-          method: kubeconfig
-          kubeconfig: secrets.KUBE_CONFIG # Use secret (https://developer.github.com/actions/managing-workflows/storing-secrets/)
-          context: <context name>  #If left unspecified, current-context from kubeconfig is used as default
+          method: service-principal
+          cluster-type: 'arc'
+          cluster-name: ${{env.CLUSTER_NAME}}
+          resource-group: ${{env.RESOURCE_GROUP}}
         id: setcontext
 
       - name: Current config
