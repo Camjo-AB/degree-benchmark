@@ -66,7 +66,9 @@ jobs:
       - name: Set up AKS context (if using AKS)
         uses: Azure/aks-set-context@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group: ${{ env.RESOURCE_GROUP }}
           cluster-name: ${{ env.CLUSTER_NAME }}
         id: login
@@ -83,7 +85,7 @@ jobs:
 
       - name: Kubectl get all resources
         run: kubectl get all
-        
+
 # This is where copy file from pod starts
 
 #      - name: Copy File from Pod
