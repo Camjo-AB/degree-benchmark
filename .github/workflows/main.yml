@@ -63,22 +63,23 @@ jobs:
           inlineScript: |
             az account show
 
-      - name: Set up AKS context (if using AKS)
-        uses: Azure/aks-set-context@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resource-group: ${{ env.RESOURCE_GROUP }}
-          cluster-name: ${{ env.CLUSTER_NAME }}
-        id: login
-
       - name: Azure Container Registry Login
         uses: azure/docker-login@v1
         with:
           login-server: ${{ env.REGISTRY_URL }}
           username: ${{env.AZURE_CONTAINER_REGISTRY}}
           password: secrets.ACR_PASSWORD
+
+      - name: Set up AKS context (if using AKS)
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: secrets.KUBE_CONFIG # Use secret (https://developer.github.com/actions/managing-workflows/storing-secrets/)
+          context: <context name>  #If left unspecified, current-context from kubeconfig is used as default
+        id: setcontext
+
+      - name: Current config
+        run: kubectl config view
 
       - name: Install Helm Chart from ACR
         run: helm install benchmark oci://${{env.AZURE_CONTAINER_REGISTRY}}.azurecr.io/helm/openmessaging-benchmark --version 1.0.0
