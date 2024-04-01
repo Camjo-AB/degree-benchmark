@@ -28,7 +28,7 @@ env:
   PROJECT_NAME: Degree-workflow              # set this to your project's name
   RESOURCE_GROUP: degree-test-group          # set this to the resource group containing your AKS cluster
   CLUSTER_NAME: degree_v1              # set this to the name of your AKS cluster
-  REGISTRY_URL: degree.azurecr.io              # set this to the URL of your registry
+  REGISTRY_URL: degree.azurecr.io # set this to the URL of your registry
 
 on: [workflow_dispatch]
 
@@ -43,8 +43,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Kubectl
-        uses: azure/setup-kubectl@v1
+      - name: Install kubctl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.29.0' # default is latest stable
+        id: install
 
       - name: Azure login
         uses: azure/login@v1
@@ -59,22 +62,24 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az account show
-#
-#      - name: Set up AKS context (if using AKS)
-#        uses: Azure/aks-set-context@v1
-#        with:
-#          creds: ${{ secrets.AZURE_CREDENTIALS }}
-#          resource-group: <ResourceGroup>
-#          cluster-name: <ClusterName>
-#
-#      - name: Azure Container Registry Login
-#        run: az acr login --name ${{ secrets.ACR_NAME }}
-#
-#      - name: Set up Helm
-#        uses: azure/setup-helm@v1
-#
-#      - name: Install Helm Chart from ACR
-#        run: helm install benchmark oci://${{ secrets.ACR_NAME }}.azurecr.io/helm/openmessaging-benchmark --version 0.0.1
+
+      - name: Set up AKS context (if using AKS)
+        uses: Azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+        id: login
+
+      - name: Azure Container Registry Login
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY_URL }}
+          username: ${{env.AZURE_CONTAINER_REGISTRY}}
+          password: secrets.ACR_PASSWORD
+
+      - name: Install Helm Chart from ACR
+        run: helm install benchmark oci://${{env.AZURE_CONTAINER_REGISTRY}}.azurecr.io/helm/openmessaging-benchmark --version 1.0.0
 
 # This is where copy file from pod starts
 
