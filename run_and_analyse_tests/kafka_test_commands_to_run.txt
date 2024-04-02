@@ -32,21 +32,24 @@ bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WOR
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/6K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/8K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/125-rate-8KB-size-1-topic-1-partitions-4p-4c.yaml
-250-rate-8KB-size-1-topic-1-partitions-4p-4c
-500-rate-8KB-size-1-topic-1-partitions-4p-4c
-750-rate-8KB-size-1-topic-1-partitions-4p-4c
-1K-rate-8KB-size-1-topic-1-partitions-4p-4c
-2K-rate-8KB-size-1-topic-1-partitions-4p-4c
-4K-rate-8KB-size-1-topic-1-partitions-4p-4c
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/250-rate-8KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/500-rate-8KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/750-rate-8KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/1K-rate-8KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/2K-rate-8KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Latency_tests/4K-rate-8KB-size-1-topic-1-partitions-4p-4c.yaml
 *Partitions_test
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/0K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
-bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/0K-rate-1KB-size-1-topic-10-partitions-4p-4c.yaml
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/0K-rate-1KB-size-1-topic-50-partitions-4p-4c.yaml
-0K-rate-1KB-size-1-topic-100-partitions-4p-4c.yaml
-1K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
-1K-rate-1KB-size-1-topic-10-partitions-4p-4c.yaml
-1K-rate-1KB-size-1-topic-50-partitions-4p-4c.yaml
-1K-rate-1KB-size-1-topic-100-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/0K-rate-1KB-size-1-topic-10-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/0K-rate-1KB-size-1-topic-2-partitions-2p-2c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/0K-rate-1KB-size-1-topic-4-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/0K-rate-1KB-size-1-topic-8-partitions-8p-8c.yaml
+0K-rate-1KB-size-1-topic-16-partitions-16p-16c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/1K-rate-1KB-size-1-topic-2-partitions-2p-2c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/1K-rate-1KB-size-1-topic-4-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/1K-rate-1KB-size-1-topic-8-partitions-8p-8c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/1K-rate-1KB-size-1-topic-16-partitions-16p-16c.yaml
 *Topics_tests
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Partitions_test/0K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Topics_tests/0K-rate-1KB-size-100-topic-1-partitions-4p-4c.yaml
@@ -56,14 +59,14 @@ bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WOR
 1K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Topics_tests/1K-rate-1KB-size-100-topic-1-partitions-4p-4c.yaml
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Topics_tests/1K-rate-1KB-size-200-topic-1-partitions-4p-4c.yaml
-bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Topics_tests/1K-rate-1KB-size-500-topic-1-partitions-4p-4c.yaml
-1K-rate-1KB-size-1000-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Topics_tests/1K-rate-1KB-size-50-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Topics_tests/1K-rate-1KB-size-150-topic-1-partitions-4p-4c.yaml
 *Producer_Consumer_Test
-0K-rate-1KB-size-1-topic-1-partitions-2p-2c
-0K-rate-1KB-size-1-topic-1-partitions-4p-4c
-0K-rate-1KB-size-1-topic-1-partitions-8p-8c
-0K-rate-1KB-size-1-topic-1-partitions-16p-16c
-1K-rate-1KB-size-1-topic-1-partitions-2p-2c
-1K-rate-1KB-size-1-topic-1-partitions-4p-4c
-1K-rate-1KB-size-1-topic-1-partitions-8p-8c
-1K-rate-1KB-size-1-topic-1-partitions-16p-16c
+0K-rate-1KB-size-1-topic-1-partitions-2p-2c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Producer_Consumer_Test/0K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
+0K-rate-1KB-size-1-topic-1-partitions-8p-8c.yaml
+0K-rate-1KB-size-1-topic-1-partitions-16p-16c.yaml
+1K-rate-1KB-size-1-topic-1-partitions-2p-2c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Producer_Consumer_Test/1K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
+1K-rate-1KB-size-1-topic-1-partitions-8p-8c.yaml
+1K-rate-1KB-size-1-topic-1-partitions-16p-16c.yaml
