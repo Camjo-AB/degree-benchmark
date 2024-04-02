@@ -14,10 +14,10 @@
 
 *Throughput_tests
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/0K-rate-100B-size-1-topic-1-partitions-4p-4c.yaml
-0K-rate-500B-size-1-topic-1-partitions-4p-4c
-0K-rate-1KB-size-1-topic-1-partitions-4p-4c
-0K-rate-1.5KB-size-1-topic-1-partitions-4p-4c
-0K-rate-2KB-size-1-topic-1-partitions-4p-4c
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/0K-rate-500B-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/0K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/0K-rate-1.5KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/0K-rate-2KB-size-1-topic-1-partitions-4p-4c.yaml
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/0K-rate-4KB-size-1-topic-1-partitions-4p-4c.yaml
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/1K-rate-100B-size-1-topic-1-partitions-4p-4c.yaml
 1K-rate-500B-size-1-topic-1-partitions-4p-4c
@@ -26,8 +26,8 @@ bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WOR
 1K-rate-2KB-size-1-topic-1-partitions-4p-4c
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/1K-rate-4KB-size-1-topic-1-partitions-4p-4c.yaml
 *Latency_tests
-1K-rate-1KB-size-1-topic-1-partitions-4p-4c
-2K-rate-1KB-size-1-topic-1-partitions-4p-4c
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/1K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/tests/Throughput_tests/2K-rate-1KB-size-1-topic-1-partitions-4p-4c
 4K-rate-1KB-size-1-topic-1-partitions-4p-4c
 6K-rate-1KB-size-1-topic-1-partitions-4p-4c
 8K-rate-1KB-size-1-topic-1-partitions-4p-4c

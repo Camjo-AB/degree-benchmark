@@ -220,22 +220,30 @@ bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
 # Manual Tests
 
 ----------------------------------------------------
+### Install set up for Kafka tests
 
-### Access Benchmark driver CLI
+kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 
-kubectl exec -ti benchmark-driver -- //bin/bash
+kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral-modified.yaml
+
+kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
+
+helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 1.0.0
 
 ### Run test for RabbitMQ
 
+1. Access benchmark driver CLI
+kubectl exec -ti benchmark-driver -- //bin/bash
+
+2. Check directory and adjust command before running tests. See tests.txt </br>
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb.yaml </br>
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb-4p-4c-50k.yaml
 
 ### Run Kafka driver
 
-1. First get into the benchmark driver pod bash shell: </br>
-   kubectl exec -ti benchmark-driver -- //bin/bash </br>
-
-Check directory and adjust command before running tests </br>
+1. Access benchmark driver CLI
+   kubectl exec -ti benchmark-driver -- //bin/bash
+2. Check directory and adjust command before running tests. See tests.txt </br>
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-1-partition-1kb.yaml </br>
 bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-100-partitions-1kb-4p-4c-200k.yaml
 
@@ -246,6 +254,12 @@ kubectl cp kafka/benchmark-driver:<sourcefile> <targetfile>
 
 Example:
 kubectl cp default/benchmark-driver:1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json 1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json
+
+### Uninstall set up for Kafka tests
+
+kubectl delete -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
+
+helm uninstall benchmark
 
 ### Generate Charts from result
 
