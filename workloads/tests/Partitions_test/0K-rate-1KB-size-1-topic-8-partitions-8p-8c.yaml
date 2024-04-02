@@ -12,18 +12,18 @@
 # limitations under the License.
 #
 
-name: 0B rate 4 producers and 4 consumers on 1 topic / 100 partition
+name: 0B rate 8 producers and 8 consumers on 1 topic / 8 partition
 
 topics: 1
-partitionsPerTopic: 100
+partitionsPerTopic: 8
 
 keyDistributor: "NO_KEY"
 messageSize: 1024
 payloadFile: "payload/payload-1kB.data"
 
 subscriptionsPerTopic: 1
-consumerPerSubscription: 4
-producersPerTopic: 4
+consumerPerSubscription: 8
+producersPerTopic: 8
 
 # Discover max-sustainable rate
 producerRate: 0

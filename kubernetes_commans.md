@@ -74,7 +74,6 @@ kubectl port-forward controlcenter-0 9021:9021
 
 ### Create Role based access control Azure
 
-
 # Azure Kubernetes Services
 
 ----------------------------------------------
@@ -220,6 +219,7 @@ bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
 # Manual Tests
 
 ----------------------------------------------------
+
 ### Install set up for Kafka tests
 
 kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
@@ -233,19 +233,19 @@ helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark -
 ### Run test for RabbitMQ
 
 1. Access benchmark driver CLI
-kubectl exec -ti benchmark-driver -- //bin/bash
+   kubectl exec -ti benchmark-driver -- //bin/bash
 
 2. Check directory and adjust command before running tests. See tests.txt </br>
-bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb.yaml </br>
-bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb-4p-4c-50k.yaml
+   bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb.yaml </br>
+   bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb-4p-4c-50k.yaml
 
 ### Run Kafka driver
 
 1. Access benchmark driver CLI
    kubectl exec -ti benchmark-driver -- //bin/bash
 2. Check directory and adjust command before running tests. See tests.txt </br>
-bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-1-partition-1kb.yaml </br>
-bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-100-partitions-1kb-4p-4c-200k.yaml
+   bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-1-partition-1kb.yaml </br>
+   bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-100-partitions-1kb-4p-4c-200k.yaml
 
 ### Copy the result from pod to current directory
 

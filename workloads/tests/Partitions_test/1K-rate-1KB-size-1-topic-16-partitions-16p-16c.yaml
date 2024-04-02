@@ -12,18 +12,18 @@
 # limitations under the License.
 #
 
-name: 1000B rate 4 producers and 4 consumers on 1 topic / 100 partition
+name: 1000B rate 16 producers and 16 consumers on 1 topic / 16 partition
 
 topics: 1
-partitionsPerTopic: 100
+partitionsPerTopic: 16
 
 keyDistributor: "NO_KEY"
 messageSize: 1024
 payloadFile: "payload/payload-1kB.data"
 
 subscriptionsPerTopic: 1
-consumerPerSubscription: 4
-producersPerTopic: 4
+consumerPerSubscription: 16
+producersPerTopic: 16
 
 # Discover max-sustainable rate
 producerRate: 1000
