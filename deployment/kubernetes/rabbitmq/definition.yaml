@@ -16,3 +16,22 @@ apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
   name: definition
+spec:
+  replicas: 3
+  persistence:
+    storage: 20Gi
+
+  resources:
+    limits:
+      cpu: "2"
+      memory: 4Gi
+    requests:
+      cpu: "2"
+      memory: 4Gi
+
+  service:
+    type: ClusterIP
+  rabbitmq:
+    additionalConfig: |
+      default_user=guest
+      default_pass=guest
