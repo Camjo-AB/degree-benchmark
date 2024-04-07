@@ -22,14 +22,6 @@ import numpy as np
 import pandas as pd
 
 
-# This function simulates reading your data files and extracting the publish rate
-def read_data(file_path):
-    with open(file_path, 'r') as f:
-        data = json.load(f)
-
-    return data
-
-
 # Function to create a line chart with multiple series
 def create_publish_rate_chart(publish_rates, labels):
     plt.figure(figsize=(10, 6))
@@ -43,35 +35,13 @@ def create_publish_rate_chart(publish_rates, labels):
     plt.show()
 
 
-def create_maximum_data(dict_df, feature):
-    # can_run_analysis(dict_df)
-    data_sizes = []
-    groups = {}
+def create_latency_data(dict_df, feature):
+    print('this is it')
+    return 0
 
-    for key in dict_df:
-        broker_match = re.search(r'(?<=tests-).+?(?<=[Qe])-', key)
-        broker = broker_match.group()
-        broker = broker[:-1]
-        size_match = re.search(r'([^-]+)-size$', key)
-        size = size_match.group(1)
-        print(key)
-        if size not in data_sizes:
-            data_sizes.append(size)
-        if broker not in groups:
-            groups[broker] = []
-            df_current = dict_df[key]
-            max_value = df_current[feature].max()
-            groups[broker].append(max_value)
-        else:
-            df_current = dict_df[key]
-            max_value = df_current[feature].max()
-            groups[broker].append(max_value)
 
-    df_hist = pd.DataFrame(groups)
-
-    df_hist["size"] = data_sizes
-
-    sizes_in_bytes = [(size, size_to_bytes(size)) for size in data_sizes]
+def sort_after_size(df_hist, sizes_in_bytes):
+    df_hist["size"] = [value[0] for value in sizes_in_bytes]
 
     sizes_sorted = sorted(sizes_in_bytes, key=lambda x: x[1], reverse=False)
 
@@ -81,48 +51,72 @@ def create_maximum_data(dict_df, feature):
     # Convert the 'size' column to a categorical type with the specified order
     df_hist['size'] = pd.Categorical(df_hist['size'], categories=sorted_data_sizes, ordered=True)
 
-    # Sort the DataFrame by the 'size' column
-    df_sorted = df_hist.sort_values('size')
-
-    return df_sorted
+    # return sorted by the 'size' column
+    return df_hist.sort_values('size')
 
 
-def size_to_bytes(size_str):
-    size_units = {"B": 1, "KB": 1024}
-    if size_str.endswith("KB"):
-        number = size_str[:-2]
+def sort_after_mbps(df_hist, sizes_in_bytes):
+    pass
+
+
+def create_maximum_data(dict_df, feature):
+    data_sizes = []
+    groups = {}
+
+    for key in dict_df:
+        current_test = dict_df[key]
+        broker_match = re.search(r'(?<=tests-).+?(?<=[Qe])-', key)
+        broker = broker_match.group()
+        broker = broker[:-1]
+
+        size = current_test['messageSize']
+        print(key)
+        if size not in data_sizes:
+            data_sizes.append(size)
+        if broker not in groups:
+            groups[broker] = []
+            feature_values = current_test[feature]
+            max_value = max(feature_values)
+            groups[broker].append(max_value)
+        else:
+            feature_values = current_test[feature]
+            max_value = max(feature_values)
+            groups[broker].append(max_value)
+
+    df_hist = pd.DataFrame(groups)
+
+    sizes_in_bytes = [(bytes_to_size(size), size) for size in data_sizes]
+
+    if dict_df['messageSize']:
+        df_sorted = sort_after_size(df_hist, sizes_in_bytes)
     else:
-        number = size_str[:-1]
+        df_sorted = sort_after_mbps(df_hist, sizes_in_bytes)
 
-    unit = size_str.replace(number, '')
-    return float(number) * size_units[unit]
-
-
-# def can_run_analysis(dict_df):
-#     first_key = next(iter(dict_df.keys()))
-#     title_match = re.search(r'.+?(?=-RabbitMQ|-Kafka)', first_key)
-#     title = title_match.group()
-#
-#     if title != "Throughput_tests":
-#         print('Histogram can only be created for Throughput_tests')
-#         sys.exit()
-#
-#     pass
+    return df_sorted.reset_index(drop=True)
 
 
-def create_maximum_histogram(df_in):
-    df_indexed = df_in.copy()
-    df_indexed = df_indexed.reset_index(drop=True)
+def bytes_to_size(byte_value):
+    kilobytes_threshold = 1024
 
+    if byte_value < kilobytes_threshold:
+        # For values less than 1024, represent as bytes
+        return f"{byte_value}B"
+    else:
+        # Convert to KB for values 1024 and above
+        kilobytes_value = byte_value / kilobytes_threshold
+        return f"{kilobytes_value:.1f}KB"
+
+
+def create_maximum_throughput_histogram(df_in):
     # Create an index for each tick position
-    x_indexes = np.arange(len(df_indexed))
+    x_indexes = np.arange(len(df_in))
 
     # The width of the bars
     bar_width = 0.25
 
     # Plot the data
-    plt.bar(x_indexes - bar_width, df_indexed['RabbitMQ'], width=bar_width, label='RabbitMQ')
-    plt.bar(x_indexes, df_indexed['Kafka-exactly-once'], width=bar_width, label='Kafka')
+    plt.bar(x_indexes - bar_width, df_in['RabbitMQ'], width=bar_width, label='RabbitMQ')
+    plt.bar(x_indexes, df_in['Kafka-exactly-once'], width=bar_width, label='Kafka')
 
     # Add labels and title
     plt.xlabel('Data Size')
@@ -133,7 +127,7 @@ def create_maximum_histogram(df_in):
     # plt.yscale('log')
 
     # Add xticks
-    plt.xticks(ticks=x_indexes, labels=df_indexed['size'])
+    plt.xticks(ticks=x_indexes, labels=df_in['size'])
 
     # Add a legend
     plt.legend()
@@ -143,14 +137,8 @@ def create_maximum_histogram(df_in):
     plt.show()
 
 
-def create_latency_data(dict_df, feature):
-    df = create_maximum_data(dict_df, 'consumeRate')
-    print('this is it')
-    pass
-
-
-# HERE START THE CREATION OF DATAFRAMES
-def dataframes_update(test_directory, filepath, dataframes, performance_frame):
+# HERE START THE CREATION OF DATA DICTIONARY
+def data_dictionary_update(test_directory, filepath, dataframes, performance_frame):
     variable_match = match_test_cast_to_variable(test_directory, filepath)
     broker_match = re.search(r'(?<=4c-|8c-|2c-|6c-).+?(?=-2024)', filepath)
 
@@ -193,47 +181,41 @@ def match_test_cast_to_variable(test_directory, filepath):
             return "something"
 
 
-def create_directory_dataframes(test_directory):
+# This function simulates reading your data files and extracting the publish rate
+def read_data(file_path):
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+
+    return data
+
+
+def create_directory_data_dictionary(test_directory):
     parent_directory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
     result_directory = os.path.join(parent_directory, 'run_and_analyse_tests', 'result', test_directory)
 
     files_in_directory = os.listdir(result_directory)
     file_directories = [result_directory + '\\' + file for file in files_in_directory]
 
-    dataframes = {}
-    mainframe = pd.DataFrame()
+    data_dict = {}
 
     for file_path in file_directories:
         data = read_data(file_path)
+        data_dictionary_update(test_directory, file_path, data_dict, data)
 
-        # Normalizing data except lists and dictionaries for mainframe
-        flat_data = {k: v for k, v in data.items() if not isinstance(v, list)}
-        primitive_data = {k: v for k, v in flat_data.items() if isinstance(v, (int, float, str))}
-
-        if mainframe is None or len(mainframe) == 0:
-            row = pd.json_normalize(primitive_data)
-            pd.concat([mainframe, row], axis=0)
-        else:
-            mainframe.append(primitive_data, ignore_index=True)
-
-        performance_data = {k: v for k, v in data.items() if isinstance(v, list)}
-        performance_frame = pd.DataFrame(performance_data)
-
-        dataframes_update(test_directory, file_path, dataframes, performance_frame)
-
-    return dataframes
+    return data_dict
 
 
 if __name__ == '__main__':
     # Directories that include all the test data
-    throughput_tests_dataframes = create_directory_dataframes('Throughput_tests')
-    latency_tests_dataframes = create_directory_dataframes('Latency_tests')
-    partitions_tests_dataframes = create_directory_dataframes('Partitions_tests')
-    topics_tests_dataframes = create_directory_dataframes('Topics_tests')
+    throughput_tests_dict = create_directory_data_dictionary('Throughput_tests')
+    latency_tests_dict = create_directory_data_dictionary('Latency_tests')
+    partitions_tests_dict = create_directory_data_dictionary('Partitions_tests')
+    topics_tests_dict = create_directory_data_dictionary('Topics_tests')
 
     # Create the chart & histograms
     # test()
-    # df = create_maximum_data(throughput_tests_dataframes, 'consumeRate')
-    # create_maximum_histogram(df)
+    # df = create_maximum_data(throughput_tests_dict, 'consumeRate')
+    # create_maximum_throughput_histogram(df)
 
-    df = create_latency_data(latency_tests_dataframes, 'publishLatency50pct')
+    df = create_maximum_data(latency_tests_dict, 'consumeRate')
+    df = create_latency_data(df, 'publishLatency50pct')
