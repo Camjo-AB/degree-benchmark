@@ -56,7 +56,8 @@ def sort_after_size(df_hist, sizes_in_bytes):
 
 
 def sort_after_mbps(df_hist, sizes_in_bytes):
-    pass
+
+    return df_hist
 
 
 def create_maximum_data(dict_df, feature):
@@ -87,12 +88,17 @@ def create_maximum_data(dict_df, feature):
 
     sizes_in_bytes = [(bytes_to_size(size), size) for size in data_sizes]
 
-    if dict_df['messageSize']:
-        df_sorted = sort_after_size(df_hist, sizes_in_bytes)
-    else:
-        df_sorted = sort_after_mbps(df_hist, sizes_in_bytes)
+    first_key = next(iter(dict_df.keys()))
+    title_match = re.search(r'.+?(?=-RabbitMQ|-Kafka)', first_key)
+    title = title_match.group()
 
-    return df_sorted.reset_index(drop=True)
+    if title == 'Throughput_tests':
+        df_size = sort_after_size(df_hist, sizes_in_bytes)
+        return df_size.reset_index(drop=True)
+    else:
+        df_mbps = sort_after_mbps(df_hist, sizes_in_bytes)
+        return df_mbps.reset_index(drop=True)
+
 
 
 def bytes_to_size(byte_value):
