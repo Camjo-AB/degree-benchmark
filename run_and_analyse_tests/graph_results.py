@@ -15,6 +15,7 @@
 import json
 import os
 import re
+import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -41,52 +42,98 @@ def create_publish_rate_chart(publish_rates, labels):
     plt.grid(True)
     plt.show()
 
-    # Function to create a line chart with multiple series
 
-
-def create_maximum_histogram(dict_df, feature):
-    first_key = next(iter(dict_df.keys()))
-    title_match = re.search(r'.+?(?=-RabbitMQ|-Kafka)', first_key)
-    title = title_match.group()
-
-    if title not in ("Latency_tests", "Throughput_tests"):
-        print('Histogram can only be created for Latency_tests and Throughput_tests')
-
+def create_maximum_data(dict_df, feature):
+    # can_run_analysis(dict_df)
     data_sizes = []
     groups = {}
+
     for key in dict_df:
-        broker_match = re.search(r'(?<=tests-).+?(?=--)', first_key)
+        broker_match = re.search(r'(?<=tests-).+?(?<=[Qe])-', key)
         broker = broker_match.group()
-        size_match = re.search(r'(?<=e--|te-).+?(?=-size)', first_key)
-        size = size_match.group()
-        data_sizes.append(size)
+        broker = broker[:-1]
+        size_match = re.search(r'([^-]+)-size$', key)
+        size = size_match.group(1)
+        print(key)
+        if size not in data_sizes:
+            data_sizes.append(size)
         if broker not in groups:
             groups[broker] = []
             df_current = dict_df[key]
-            max_value = df_current[feature]
-            groups[broker].append(max_value.max())
+            max_value = df_current[feature].max()
+            groups[broker].append(max_value)
         else:
             df_current = dict_df[key]
             max_value = df_current[feature].max()
             groups[broker].append(max_value)
 
+    df_hist = pd.DataFrame(groups)
+
+    df_hist["size"] = data_sizes
+
+    sizes_in_bytes = [(size, size_to_bytes(size)) for size in data_sizes]
+
+    sizes_sorted = sorted(sizes_in_bytes, key=lambda x: x[1], reverse=False)
+
+    # List defining the desired order
+    sorted_data_sizes = [size[0] for size in sizes_sorted]
+
+    # Convert the 'size' column to a categorical type with the specified order
+    df_hist['size'] = pd.Categorical(df_hist['size'], categories=sorted_data_sizes, ordered=True)
+
+    # Sort the DataFrame by the 'size' column
+    df_sorted = df_hist.sort_values('size')
+
+    return df_sorted
+
+
+def size_to_bytes(size_str):
+    size_units = {"B": 1, "KB": 1024}
+    if size_str.endswith("KB"):
+        number = size_str[:-2]
+    else:
+        number = size_str[:-1]
+
+    unit = size_str.replace(number, '')
+    return float(number) * size_units[unit]
+
+
+# def can_run_analysis(dict_df):
+#     first_key = next(iter(dict_df.keys()))
+#     title_match = re.search(r'.+?(?=-RabbitMQ|-Kafka)', first_key)
+#     title = title_match.group()
+#
+#     if title != "Throughput_tests":
+#         print('Histogram can only be created for Throughput_tests')
+#         sys.exit()
+#
+#     pass
+
+
+def create_maximum_histogram(df_in):
+    df_indexed = df_in.copy()
+    df_indexed = df_indexed.reset_index(drop=True)
+
     # Create an index for each tick position
-    x_indexes = np.arange(len(data_sizes))
+    x_indexes = np.arange(len(df_indexed))
 
     # The width of the bars
     bar_width = 0.25
 
     # Plot the data
-    plt.bar(x_indexes - bar_width, groups['RabbitMQ'], width=bar_width, label='Group 1')
-    plt.bar(x_indexes, groups['Kafka-exactly-once'], width=bar_width, label='Group 2')
+    plt.bar(x_indexes - bar_width, df_indexed['RabbitMQ'], width=bar_width, label='RabbitMQ')
+    plt.bar(x_indexes, df_indexed['Kafka-exactly-once'], width=bar_width, label='Kafka')
 
     # Add labels and title
     plt.xlabel('Data Size')
-    plt.ylabel('Throughput in MB/seconds')
+    plt.ylabel('Throughput in Events/seconds')
     plt.title('Throughput Comparison by Data Size')
 
+    # Set the y-axis to a logarithmic scale
+    # plt.yscale('log')
+
     # Add xticks
-    plt.xticks(ticks=x_indexes, labels=data_sizes)
+    plt.xticks(ticks=x_indexes, labels=df_indexed['size'])
 
     # Add a legend
     plt.legend()
@@ -96,6 +143,13 @@ def create_maximum_histogram(dict_df, feature):
     plt.show()
 
 
+def create_latency_data(dict_df, feature):
+    df = create_maximum_data(dict_df, 'consumeRate')
+    print('this is it')
+    pass
+
+
+# HERE START THE CREATION OF DATAFRAMES
 def dataframes_update(test_directory, filepath, dataframes, performance_frame):
     variable_match = match_test_cast_to_variable(test_directory, filepath)
     broker_match = re.search(r'(?<=4c-|8c-|2c-|6c-).+?(?=-2024)', filepath)
@@ -119,9 +173,9 @@ def match_test_cast_to_variable(test_directory, filepath):
         case 'Latency_tests':
             variable_match = re.search(r'(?<=Latency_tests\\).+?(?=-1-topic)', filepath)
             return variable_match
-        case 'Partitions_test':
+        case 'Partitions_tests':
             variable_match = re.search(r'(?<=-topic-).+?(?=-4p-|-8p-|-2p-|-6p-)', filepath)
-            partition_match = re.search(r'(?<=Partitions_test\\).+?-rate', filepath)
+            partition_match = re.search(r'(?<=Partitions_tests\\).+?-rate', filepath)
             partition_value = partition_match.group()
             variable_value = variable_match.group()
             result = str(partition_value + '-' + variable_value)
@@ -133,7 +187,7 @@ def match_test_cast_to_variable(test_directory, filepath):
             variable_value = variable_match.group()
             result = str(topic_value + '-' + variable_value)
             return result
-        case 'Producer_Consumer_Test':
+        case 'Producer_Consumer_tests':
             return "four"
         case default:
             return "something"
@@ -170,47 +224,16 @@ def create_directory_dataframes(test_directory):
     return dataframes
 
 
-def test():
-    # Sample data
-    data_sizes = ['10B', '100B', '1K', '10KB', '50KB', '100KB']
-    group1 = [20, 35, 30, 35, 27, 24]
-    group2 = [25, 32, 34, 20, 25, 27]
-    group3 = [30, 38, 40, 35, 32, 30]
-
-    # Create an index for each tick position
-    x_indexes = np.arange(len(data_sizes))
-
-    # The width of the bars
-    bar_width = 0.25
-
-    # Plot the data
-    plt.bar(x_indexes - bar_width, group1, width=bar_width, label='Group 1')
-    plt.bar(x_indexes, group2, width=bar_width, label='Group 2')
-    plt.bar(x_indexes + bar_width, group3, width=bar_width, label='Group 3')
-
-    # Add labels and title
-    plt.xlabel('Data Size')
-    plt.ylabel('Throughput in MB/seconds')
-    plt.title('Throughput Comparison by Data Size')
-
-    # Add xticks
-    plt.xticks(ticks=x_indexes, labels=data_sizes)
-
-    # Add a legend
-    plt.legend()
-
-    # Display the chart
-    plt.tight_layout()
-    plt.show()
-
-
 if __name__ == '__main__':
     # Directories that include all the test data
     throughput_tests_dataframes = create_directory_dataframes('Throughput_tests')
     latency_tests_dataframes = create_directory_dataframes('Latency_tests')
-    partitions_test_dataframes = create_directory_dataframes('Partitions_test')
+    partitions_tests_dataframes = create_directory_dataframes('Partitions_tests')
     topics_tests_dataframes = create_directory_dataframes('Topics_tests')
 
     # Create the chart & histograms
-    test()
-    create_maximum_histogram(throughput_tests_dataframes, 'consumeRate')
+    # test()
+    # df = create_maximum_data(throughput_tests_dataframes, 'consumeRate')
+    # create_maximum_histogram(df)
+
+    df = create_latency_data(latency_tests_dataframes, 'publishLatency50pct')
