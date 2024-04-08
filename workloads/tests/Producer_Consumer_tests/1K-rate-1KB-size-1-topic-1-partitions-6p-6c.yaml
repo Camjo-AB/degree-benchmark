@@ -26,7 +26,7 @@
 # limitations under the License.
 #
 
-name: 0B rate 16 producers and 16 consumers on 1 topic / 1 partition
+name: 1000B rate 6 producers and 6 consumers on 1 topic / 1 partition
 
 topics: 1
 partitionsPerTopic: 1
@@ -36,11 +36,11 @@ messageSize: 1024
 payloadFile: "payload/payload-1kB.data"
 
 subscriptionsPerTopic: 1
-consumerPerSubscription: 16
-producersPerTopic: 16
+consumerPerSubscription: 6
+producersPerTopic: 6
 
 # Discover max-sustainable rate
-producerRate: 0
+producerRate: 1000
 
 consumerBacklogSizeGB: 0
 testDurationMinutes: 5

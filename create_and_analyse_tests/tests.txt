@@ -42,11 +42,11 @@
 0K-rate-1KB-size-1-topic-2-partitions-2p-2c
 0K-rate-1KB-size-1-topic-4-partitions-4p-4c
 0K-rate-1KB-size-1-topic-8-partitions-8p-8c
-0K-rate-1KB-size-1-topic-16-partitions-16p-16c
+0K-rate-1KB-size-1-topic-6-partitions-6p-6c
 1K-rate-1KB-size-1-topic-2-partitions-2p-2c
 1K-rate-1KB-size-1-topic-4-partitions-4p-4c
 1K-rate-1KB-size-1-topic-8-partitions-8p-8c
-1K-rate-1KB-size-1-topic-16-partitions-16p-16c
+1K-rate-1KB-size-1-topic-6-partitions-6p-6c
 *Topics_tests
 0K-rate-1KB-size-1-topic-1-partitions-4p-4c
 0K-rate-1KB-size-100-topic-1-partitions-4p-4c
@@ -62,8 +62,8 @@
 0K-rate-1KB-size-1-topic-1-partitions-2p-2c
 0K-rate-1KB-size-1-topic-1-partitions-4p-4c
 0K-rate-1KB-size-1-topic-1-partitions-8p-8c
-0K-rate-1KB-size-1-topic-1-partitions-16p-16c
+0K-rate-1KB-size-1-topic-1-partitions-6p-6c
 1K-rate-1KB-size-1-topic-1-partitions-2p-2c
 1K-rate-1KB-size-1-topic-1-partitions-4p-4c
 1K-rate-1KB-size-1-topic-1-partitions-8p-8c
-1K-rate-1KB-size-1-topic-1-partitions-16p-16c
+1K-rate-1KB-size-1-topic-1-partitions-6p-6c
