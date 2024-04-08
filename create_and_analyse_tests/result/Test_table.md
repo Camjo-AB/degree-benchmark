@@ -112,11 +112,11 @@
 |  1K-rate-1KB-size-50-topic-1-partitions-4p-4c  |  N/A   |                   |                                                                                           |
 | 1K-rate-1KB-size-150-topic-1-partitions-4p-4c  |  N/A   |                   |                                                                                           |
 |            *Producer_Consumer_Test             |        |                   |                                                                                           |
-|  0K-rate-1KB-size-1-topic-1-partitions-2p-2c   |        |                   |                                                                                           |
+|  0K-rate-1KB-size-1-topic-1-partitions-2p-2c   |   OK   |                   |                                                                                           |
 |  0K-rate-1KB-size-1-topic-1-partitions-4p-4c   |   OK   |                   |                                                                                           |
 |  0K-rate-1KB-size-1-topic-1-partitions-8p-8c   |        |                   |                                                                                           |
 |  0K-rate-1KB-size-1-topic-1-partitions-6p-6c   |        |                   |                                                                                           |
-|  1K-rate-1KB-size-1-topic-1-partitions-2p-2c   |        |                   |                                                                                           |
+|  1K-rate-1KB-size-1-topic-1-partitions-2p-2c   |   OK   |                   |                                                                                           |
 |  1K-rate-1KB-size-1-topic-1-partitions-4p-4c   |        |                   |                                                                                           |
 |  1K-rate-1KB-size-1-topic-1-partitions-8p-8c   |        |                   |                                                                                           |
 |  1K-rate-1KB-size-1-topic-1-partitions-6p-6c   |        |                   |                                                                                           |

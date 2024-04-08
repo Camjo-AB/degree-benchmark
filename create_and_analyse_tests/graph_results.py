@@ -89,7 +89,7 @@ def create_plot_data(test_dict, measurement):
         # if int(rate)+size not in throughput:
         throughput[int(rate) + size] = (int(rate) * size, size)
 
-        print(key)
+        print(key + ' ' + current_test_data['timestamp'])
         if size not in data_sizes:
             data_sizes.append(size)
         if broker not in groups:
@@ -184,6 +184,7 @@ def data_dictionary_update(test_directory, filepath, data_dict, performance_data
         variable_value = variable_match.group()
     else:
         variable_value = variable_match
+
     broker_value = broker_match.group()
 
     key = str(test_directory + '-' + broker_value + '-' + variable_value)
@@ -239,6 +240,9 @@ def create_directory_data_dictionary(test_directory):
     for file_path in file_paths:
         data = read_data(file_path)
         data_dictionary_update(test_directory, file_path, data_dict, data)
+        time_match = re.search(r"2024.*?(?=.json)", file_path)
+        time_value = time_match.group()
+        data['timestamp'] = time_value
 
     return data_dict
 
