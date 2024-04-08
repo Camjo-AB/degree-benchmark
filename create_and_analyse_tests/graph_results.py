@@ -229,7 +229,7 @@ def read_data(file_path):
 
 def create_directory_data_dictionary(test_directory):
     parent_directory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    result_directory = os.path.join(parent_directory, 'run_and_analyse_tests', 'result', test_directory)
+    result_directory = os.path.join(parent_directory, 'create_and_analyse_tests', 'result', test_directory)
 
     files_in_directory = os.listdir(result_directory)
     file_paths = [result_directory + '\\' + file for file in files_in_directory]

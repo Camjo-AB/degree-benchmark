@@ -227,21 +227,27 @@ bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
 ----------------------------------------------------
 
 ### 1.Set up kubernetes context
+
 Change to the namespace for the broker </br>
 kubectl config set-context --current --namespace default
 kubectl config set-context --current --namespace kafka
 
 ### 2. Install set up for Kafka tests
-
+1. Create the Cluster Operator, wait till running 
 kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 
+2. Create Kafka brokers and Zookeper, wait till running 
 kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral-modified.yaml
 
+3. Create Htlm bridge for communication between pods, wait till running 
 kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
 
-helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 1.0.0
+4. Create pods for openmessaging benchmark, wait till running
+helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 1.0.6
 
 ### 3. Run test for RabbitMQ
+
+No installation, just install helm chart and forward to management tool 
 
 1. Access benchmark driver CLI
    kubectl exec -ti benchmark-driver -- //bin/bash
