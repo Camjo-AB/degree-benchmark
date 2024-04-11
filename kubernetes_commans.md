@@ -169,10 +169,11 @@ echo "username: $username"
 kubectl port-forward "service/definition" 15672
 
 The following is for logging in to the management tool  </br>
-username: default_user_BCIA3bWwXDq23P0RdZa </br>
-password: 6HoPzHMGJ4rrYwLzz610fCNbk201I5jS </br>
+username: guest </br>
+password: guest </br>
 
 Default username is changed if new definition is installed. New credentials will have to be added to file new_rabbitmq.yaml in driver-rabbitmq
+but only if the definition does not have predefined username and password
 
 # Kafka
 
@@ -233,21 +234,22 @@ kubectl config set-context --current --namespace default
 kubectl config set-context --current --namespace kafka
 
 ### 2. Install set up for Kafka tests
-1. Create the Cluster Operator, wait till running 
-kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 
-2. Create Kafka brokers and Zookeper, wait till running 
-kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral-modified.yaml
+1. Create the Cluster Operator, wait till running
+   kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 
-3. Create Htlm bridge for communication between pods, wait till running 
-kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
+2. Create Kafka brokers and Zookeper, wait till running
+   kubectl apply -f ./deployment/kubernetes/kafka/kafka-ephemeral-modified.yaml
+
+3. Create Htlm bridge for communication between pods, wait till running
+   kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
 
 4. Create pods for openmessaging benchmark, wait till running
-helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 1.0.6
+   helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 1.0.6
 
 ### 3. Run test for RabbitMQ
 
-No installation, just install helm chart and forward to management tool 
+No installation, just install helm chart and forward to management tool
 
 1. Access benchmark driver CLI
    kubectl exec -ti benchmark-driver -- //bin/bash

@@ -36,8 +36,8 @@ def create_publish_rate_chart(publish_rates, labels):
     plt.show()
 
 
-def sort_after_size(df_thrpt, sizes_in_bytes):
-    df_thrpt1 = df_thrpt.copy()
+def sort_after_size(df_in, sizes_in_bytes):
+    df_thrpt1 = df_in.copy()
     df_thrpt1["message_size"] = [value[0] for value in sizes_in_bytes]
 
     sizes_sorted = sorted(sizes_in_bytes, key=lambda x: x[1], reverse=False)
@@ -52,8 +52,8 @@ def sort_after_size(df_thrpt, sizes_in_bytes):
     return df_thrpt1.sort_values('message_size')
 
 
-def sort_after_mbps(df_ltcy, throughput):
-    df_ltcy1 = df_ltcy.copy()
+def sort_after_mbps(df_in, throughput):
+    df_ltcy1 = df_in.copy()
     data = [value for key, value in throughput.items()]
     df_to_add = pd.DataFrame(data, columns=['throughput', 'size'])
 
@@ -79,15 +79,28 @@ def add_throughput(df_in):
     df_put['Kafka-mbps'] = df_put['Kafka-exactly-once'] * df_put['message_size_bytes']
     df_put['Kafka-mbps'] = (df_put['Kafka-mbps']).round().astype(int)
 
-    df_put['RabbitMQ-mbps'] = df_put['RabbitMQ'] * df_put['message_size_bytes']
-    df_put['RabbitMQ-mbps'] = (df_put['RabbitMQ-mbps']).round().astype(int)
+    if 'RabbitMQ' in df_put.columns:
+        df_put['RabbitMQ-mbps'] = df_put['RabbitMQ'] * df_put['message_size_bytes']
+        df_put['RabbitMQ-mbps'] = (df_put['RabbitMQ-mbps']).round().astype(int)
 
     return df_put
 
 
-def get_thrpt_ltcy(df_in, prods_cons):
-    df_thrpt_in, df_ltcy_in = df_in.copy()
-    return df_thrpt_in, df_ltcy_in
+def get_thrpt_ltcy(df_in, variable_x, measurement, size_in_bytes, col_name):
+    df_save = df_in.copy()
+    rate = [value[0] for value in variable_x.values()]
+    variables = [value[1] for value in variable_x.values()]
+    df_save['rate'] = rate
+    df_save[col_name] = variables
+
+    if 'consumeRate' == measurement:
+        list_of_sizes = [size_in_bytes[0] for _ in range(len(df_save))]
+        df_save['message_size'] = [size[0] for size in list_of_sizes]
+        df_save = add_throughput(df_save)
+
+    df_max = df_save[df_save['rate'] == 0]
+    df_1k = df_save[df_save['rate'] == 1000]
+    return df_max, df_1k
 
 
 def create_plot_data(test_dict, measurement):
@@ -154,8 +167,14 @@ def create_plot_data(test_dict, measurement):
         df_size_1kb, df_size_8kb = sort_after_mbps(df_hist, throughput)
         return df_size_1kb.reset_index(drop=True), df_size_8kb.reset_index(drop=True)
     elif test == 'Producer_Consumer_tests':
-        df_0k, df_1k = get_thrpt_ltcy(df_hist, prods_cons)
-        return
+        df_0k, df_1k = get_thrpt_ltcy(df_hist, prods_cons, measurement, sizes_in_bytes, 'producer/consumer')
+        return df_0k.reset_index(drop=True), df_1k.reset_index(drop=True)
+    elif test == 'Partitions_tests':
+        df_0k, df_1k = get_thrpt_ltcy(df_hist, partitions, measurement, sizes_in_bytes, 'partitions')
+        return df_0k.reset_index(drop=True), df_1k.reset_index(drop=True)
+    elif test == 'Topics_tests':
+        df_0k, df_1k = get_thrpt_ltcy(df_hist, topics, measurement, sizes_in_bytes, 'topics')
+        return df_0k.reset_index(drop=True), df_1k.reset_index(drop=True)
 
 
 def bytes_to_size(byte_value):
@@ -194,21 +213,23 @@ def create_histogram(df_in, ltcy_or_thrpt, filepath):
 
     else:
         if ltcy_or_thrpt == 'thrpt':
+            measurement, x_ticks = set_measurement_x_ticks(df_plt)
             show_plt(bar_width, df_plt, x_indexes,
                      'RabbitMQ-mbps', 'Kafka-mbps',
                      'RabbitMQ', 'Kafka',
-                     'Message Size', 'Throughput in Mbps',
-                     'Throughput Comparison by Mbps',
-                     'message_size',
+                     measurement, 'Throughput in Mbps',
+                     'Throughput Comparison by ' + measurement,
+                     x_ticks,
                      filepath,
                      logarithmic_scale=False)
         elif ltcy_or_thrpt == 'ltcy':
+            measurement, x_ticks = set_measurement_x_ticks(df_plt)
             show_plt(bar_width, df_plt, x_indexes,
                      'RabbitMQ', 'Kafka-exactly-once',
                      'RabbitMQ', 'Kafka',
-                     'Message Size', 'Latency(ms)',
-                     'Latency(ms) Comparison by Message Size',
-                     'message_size',
+                     measurement, 'Latency(ms)',
+                     'Latency(ms) Comparison by ' + measurement,
+                     x_ticks,
                      filepath,
                      logarithmic_scale=False)
         # If nan in ltcy_or_thrpt
@@ -224,6 +245,22 @@ def create_histogram(df_in, ltcy_or_thrpt, filepath):
     return df_plt
 
 
+def set_measurement_x_ticks(df_plt):
+    measurement = 'Message Size'
+    x_ticks = 'message_size'
+    if 'producer/consumer' in df_plt.columns:
+        measurement = '# Producer/Consumer'
+        x_ticks = 'producer/consumer'
+    elif 'partitions' in df_plt.columns:
+        measurement = '# Partitions'
+        x_ticks = 'partitions'
+    elif 'topics' in df_plt.columns:
+        measurement = '# Topics'
+        x_ticks = 'topics'
+
+    return measurement, x_ticks
+
+
 def show_plt(bar_width, df_in, x_indexes,
              data_broker_1, data_broker_2,
              broker_1, broker_2,
@@ -234,7 +271,8 @@ def show_plt(bar_width, df_in, x_indexes,
              logarithmic_scale,
              ):
     # Plot the data
-    plt.bar(x_indexes - bar_width, df_in[data_broker_1], width=bar_width, label=broker_1)
+    if 'RabbitMQ' in df_in.columns or 'RabbitMQ-mbps' in df_in.columns:
+        plt.bar(x_indexes - bar_width, df_in[data_broker_1], width=bar_width, label=broker_1)
     plt.bar(x_indexes, df_in[data_broker_2], width=bar_width, label=broker_2)
 
     # Add labels and title
@@ -283,7 +321,7 @@ def show_plt(bar_width, df_in, x_indexes,
 # HERE START THE CREATION OF DATA DICTIONARY
 def data_dictionary_update(test_directory, filepath, data_dict, performance_data):
     variable_match = match_test_cast_to_variable(test_directory, filepath)
-    broker_match = re.search(r'(?<=4c-|8c-|2c-|6c-).+?(?=-2024)', filepath)
+    broker_match = re.search(r'(?<=4c-|8c-|2c-|6c-|1c-).+?(?=-2024)', filepath)
 
     if not isinstance(variable_match, str):
         variable_value = variable_match.group()
@@ -306,7 +344,7 @@ def match_test_cast_to_variable(test_directory, filepath):
             variable_match = re.search(r'(?<=Latency_tests\\).+?(?=-1-topic)', filepath)
             return variable_match
         case 'Partitions_tests':
-            variable_match = re.search(r'(?<=-topic-).+?(?=-4p-|-8p-|-2p-|-6p-)', filepath)
+            variable_match = re.search(r'(?<=-topic-).+?(?=-4p-|-8p-|-2p-|-6p-|-1p-)', filepath)
             partition_match = re.search(r'(?<=Partitions_tests\\).+?-rate', filepath)
             partition_value = partition_match.group()
             variable_value = variable_match.group()
@@ -372,8 +410,8 @@ if __name__ == '__main__':
 
     df_mbps = create_histogram(df_thrpt, 'thrpt', thrpt_filepath)
     df_size = create_histogram(df_thrpt, 'nan', thrpt_filepath)
-        # latency for message size max throughput
-        # df_latency = create_histogram(df_ltcy_msgs_size, 'ltcy', thrpt_filepath)
+    # latency for message size max throughput
+    # df_latency = create_histogram(df_ltcy_msgs_size, 'ltcy', thrpt_filepath)
 
     # Latency tests charts - producer rate~, message size: 1Kb, 8Kb
     df_1kb_99pct, df_8kb_99pct = create_plot_data(latency_tests_dict, "aggregatedEndToEndLatency99pct")
@@ -383,16 +421,29 @@ if __name__ == '__main__':
 
     # Producer/Consumer tests charts - Max throughput: on 1kb message size, Latency: on 1kb message size producer
     # rate 1k
-    df_thrpt = create_plot_data(prod_cons_tests_dict, 'consumeRate')
-    df_ltcy = create_plot_data(prod_cons_tests_dict, 'aggregatedEndToEndLatency99pct')
+    df_thrpt_max, df_thrpt_1k = create_plot_data(prod_cons_tests_dict, 'consumeRate')
+    df_ltcy_max, df_ltcy_1k = create_plot_data(prod_cons_tests_dict, 'aggregatedEndToEndLatency99pct')
 
-    df_prod_cons_thrpt = create_histogram(df_thrpt, 'thrpt', prod_cons_filepath)
-    df_prod_cons_ltcy = create_histogram(df_ltcy, 'ltcy', prod_cons_filepath)
+    df_prod_cons_thrpt_max = create_histogram(df_thrpt_max, 'thrpt', prod_cons_filepath)
+    df_prod_cons_thrpt_1k = create_histogram(df_thrpt_1k, 'thrpt', prod_cons_filepath)
+    df_prod_cons_ltcy_max = create_histogram(df_ltcy_max, 'ltcy', prod_cons_filepath)
+    df_prod_cons_ltcy_1k = create_histogram(df_ltcy_1k, 'ltcy', prod_cons_filepath)
 
     # Partitions test charts - Max throughput: on 1kb message size, Latency: on 1kb message size producer rate 1k
-    # df_partitions_thrpt =
-    # df_partitions_ltcy =
+    df_thrpt_max_part, df_thrpt_1k_part = create_plot_data(partitions_tests_dict, 'consumeRate')
+    df_ltcy_max_part, df_ltcy_1k_part = create_plot_data(partitions_tests_dict, 'aggregatedEndToEndLatency99pct')
+
+    df_part_thrpt_max = create_histogram(df_thrpt_max_part, 'thrpt', prt_filepath)
+    df_part_thrpt_1k = create_histogram(df_thrpt_1k_part, 'thrpt', prt_filepath)
+    df_part_ltcy_max = create_histogram(df_ltcy_max_part, 'ltcy', prt_filepath)
+    df_part_ltcy_1k = create_histogram(df_ltcy_1k_part, 'ltcy', prt_filepath)
 
     # Topics test charts - Max throughput: on 1kb message size, Latency: on 1kb message size producer rate 1k
-    # df_topics_thrpt =
-    # df_topics_ltcy =
+
+    df_thrpt_max_topic, df_thrpt_1k_topic = create_plot_data(topics_tests_dict, 'consumeRate')
+    df_ltcy_max_topic, df_ltcy_1k_topic = create_plot_data(topics_tests_dict, 'aggregatedEndToEndLatency99pct')
+
+    df_topic_thrpt_max = create_histogram(df_thrpt_max_topic, 'thrpt', prt_filepath)
+    df_topic_thrpt_1k = create_histogram(df_thrpt_1k_topic, 'thrpt', prt_filepath)
+    df_topic_ltcy_max = create_histogram(df_ltcy_max_topic, 'ltcy', prt_filepath)
+    df_topic_ltcy_1k = create_histogram(df_ltcy_1k_topic, 'ltcy', prt_filepath)

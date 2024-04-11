@@ -25,7 +25,7 @@ consumerCreationBatchSize: 5
 
 amqpUris:
 # AKS
-  - amqp://default_user_BCIA3bWwXDq23P0RdZa:6HoPzHMGJ4rrYwLzz610fCNbk201I5jS@definition:5672/
+  - amqp://default_user_VQ25N0tfv0GYHwN4eza:MPDUryvj7G9QPr2PMlv7zqlGgyTP3tKJ@definition:5672/
 ## Minikube
 #  - amqp://default_user_B9f8A_FypV3yAYSGN47:Ve4Sfr4ZAvsN4TPIUVZD7NPxS_Nh06ie@definition:5672/
 messagePersistence: false
