@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 
-numWorkers: 6
+numWorkers: 12
 #image: gnormelli/benchmark:v2
 image: Degree.azurecr.io/benchmark:main
 imagePullPolicy: Always

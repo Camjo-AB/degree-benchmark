@@ -12,21 +12,21 @@
 # limitations under the License.
 #
 
-name: {rate}B rate {producers} producers and {consumers} consumers on {topic} topic / {partition} partition
+name: 0B rate 1 producers and 1 consumers on 1 topic / 1 partition
 
-topics: {topic}
-partitionsPerTopic: {partition}
+topics: 1
+partitionsPerTopic: 1
 
 keyDistributor: "NO_KEY"
-messageSize: {size}
-payloadFile: "payload/payload-{payload}.data"
+messageSize: 1024
+payloadFile: "payload/payload-1kB.data"
 
 subscriptionsPerTopic: 1
-consumerPerSubscription: {consumers}
-producersPerTopic: {producers}
+consumerPerSubscription: 1
+producersPerTopic: 1
 
 # Discover max-sustainable rate
-producerRate: {rate}
+producerRate: 0
 
 consumerBacklogSizeGB: 0
-testDurationMinutes: {duration}
+testDurationMinutes: 5

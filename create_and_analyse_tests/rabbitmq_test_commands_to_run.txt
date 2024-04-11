@@ -41,9 +41,9 @@ bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS wor
 *Producer_Consumer_Test
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Producer_Consumer_tests/0K-rate-1KB-size-1-topic-1-partitions-2p-2c.yaml
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Producer_Consumer_tests/0K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
-0K-rate-1KB-size-1-topic-1-partitions-8p-8c
-0K-rate-1KB-size-1-topic-1-partitions-6p-6c
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Producer_Consumer_tests/0K-rate-1KB-size-1-topic-1-partitions-8p-8c.yaml
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Producer_Consumer_tests/0K-rate-1KB-size-1-topic-1-partitions-6p-6c.yaml
 bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Producer_Consumer_tests/1K-rate-1KB-size-1-topic-1-partitions-2p-2c.yaml
-1K-rate-1KB-size-1-topic-1-partitions-4p-4c
-1K-rate-1KB-size-1-topic-1-partitions-8p-8c
-1K-rate-1KB-size-1-topic-1-partitions-6p-6c
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Producer_Consumer_tests/1K-rate-1KB-size-1-topic-1-partitions-4p-4c.yaml
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Producer_Consumer_tests/1K-rate-1KB-size-1-topic-1-partitions-8p-8c.yaml
+bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Producer_Consumer_tests/1K-rate-1KB-size-1-topic-1-partitions-6p-6c.yaml
