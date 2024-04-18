@@ -267,7 +267,7 @@ def show_plt(bar_width, df_in, x_indexes,
              x_label, y_label,
              title,
              x_ticks,
-             filepath,
+             directory,
              logarithmic_scale,
              ):
     # Plot the data
@@ -307,9 +307,15 @@ def show_plt(bar_width, df_in, x_indexes,
     plt.legend()
 
     # Save chart to png
-    if not os.path.exists(filepath):
-        os.makedirs(filepath)
-    file_path = filepath + '\\' + title + '.png'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    title = title.replace(' ', '_')
+    title = title.replace('#', 'number_of')
+    title = title.replace('/', '_and_')
+    file_path = directory + '\\' + title + '.png'
+    if os.path.exists(file_path):
+        file_path = file_path.replace('.png', '(2).png')
     plt.savefig(file_path, format='png', dpi=300, bbox_inches='tight')
 
     # Display the chart
@@ -395,7 +401,7 @@ def create_directory_data_dictionary(test_directory):
         time_value = time_match.group()
         data['timestamp'] = time_value
 
-    graph_directory = os.path.join(parent_directory, 'create_and_analyse_tests', 'result', 'graphs',test_directory)
+    graph_directory = os.path.join(parent_directory, 'create_and_analyse_tests', 'result', 'Graphs', test_directory)
     return data_dict, graph_directory
 
 
@@ -446,7 +452,7 @@ if __name__ == '__main__':
     df_thrpt_max_topic, df_thrpt_1k_topic = create_plot_data(topics_tests_dict, 'consumeRate')
     df_ltcy_max_topic, df_ltcy_1k_topic = create_plot_data(topics_tests_dict, 'aggregatedEndToEndLatency99pct')
 
-    df_topic_thrpt_max = create_histogram(df_thrpt_max_topic, 'thrpt', prt_filepath)
-    df_topic_thrpt_1k = create_histogram(df_thrpt_1k_topic, 'thrpt', prt_filepath)
-    df_topic_ltcy_max = create_histogram(df_ltcy_max_topic, 'ltcy', prt_filepath)
-    df_topic_ltcy_1k = create_histogram(df_ltcy_1k_topic, 'ltcy', prt_filepath)
+    df_topic_thrpt_max = create_histogram(df_thrpt_max_topic, 'thrpt', tpc_filepath)
+    df_topic_thrpt_1k = create_histogram(df_thrpt_1k_topic, 'thrpt', tpc_filepath)
+    df_topic_ltcy_max = create_histogram(df_ltcy_max_topic, 'ltcy', tpc_filepath)
+    df_topic_ltcy_1k = create_histogram(df_ltcy_1k_topic, 'ltcy', tpc_filepath)
