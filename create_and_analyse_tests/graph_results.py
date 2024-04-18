@@ -307,8 +307,10 @@ def show_plt(bar_width, df_in, x_indexes,
     plt.legend()
 
     # Save chart to png
-    # file_path = filepath + '\\' + title + '.png'
-    # plt.savefig(file_path, format='png', dpi=300, bbox_inches='tight')
+    if not os.path.exists(filepath):
+        os.makedirs(filepath)
+    file_path = filepath + '\\' + title + '.png'
+    plt.savefig(file_path, format='png', dpi=300, bbox_inches='tight')
 
     # Display the chart
     plt.tight_layout()
@@ -393,7 +395,8 @@ def create_directory_data_dictionary(test_directory):
         time_value = time_match.group()
         data['timestamp'] = time_value
 
-    return data_dict, result_directory
+    graph_directory = os.path.join(parent_directory, 'create_and_analyse_tests', 'result', 'graphs',test_directory)
+    return data_dict, graph_directory
 
 
 if __name__ == '__main__':
