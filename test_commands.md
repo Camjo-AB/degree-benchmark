@@ -1,9 +1,9 @@
 ### Creat secrete
 
-kubectl create secret generic regcred --from-file=.dockerconfigjson="C:\Users\Gustav Normelli\.docker\config.json" --type=kubernetes.io/dockerconfigjson
+kubectl create secret generic regcred --from-file=.dockerconfigjson="\.docker\config.json" --type=kubernetes.io/dockerconfigjson
 
-password="dckr_pat_BfGxFWPYnGSDefhILR2HKEHPdzQ"
-username="gnormelli"
+password="password"
+username="username"
 
 echo "username: $username"
 echo "password: $password"
