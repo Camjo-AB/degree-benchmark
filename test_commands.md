@@ -8,7 +8,7 @@ username="username"
 echo "username: $username"
 echo "password: $password"
 
-kubectl create secret docker-registry regcred --docker-server="https://index.docker.io/v1/" --docker-username="$username" --docker-password="$password" --docker-email="gustav.normelli@gmail.com"
+kubectl create secret docker-registry regcred --docker-server="https://index.docker.io/v1/" --docker-username="$username" --docker-password="$password" --docker-email="email"
 
 # Miscellaneous commands minikube & kubectl
 
