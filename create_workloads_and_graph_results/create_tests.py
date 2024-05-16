@@ -117,7 +117,7 @@ def main():
 
     parent_directory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
     test_directory = os.path.join(parent_directory, 'workloads', 'tests')
-    result_directory = os.path.join(parent_directory, 'run_and_analyse_tests', 'result')
+    result_directory = os.path.join(parent_directory, 'create_workloads_and_graph_results', 'result')
     start_read = False
 
     for line in fileinput.input(['tests.txt']):

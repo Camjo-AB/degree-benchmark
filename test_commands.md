@@ -223,11 +223,14 @@ bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
 
 ### 1.Set up kubernetes context
 
-Change to the namespace for the broker </br>
+Change to the namespace depending on broker to be tested </br>
 kubectl config set-context --current --namespace default
 kubectl config set-context --current --namespace kafka
 
-### 2. Install set up for Kafka tests
+### 2. RabbitMQ set up (option 1)
+No installation, just install helm chart and forward to management tool
+
+### 2. Install set up for Kafka tests (option 2)
 
 1. Create the Cluster Operator, wait till running
    kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
@@ -241,9 +244,7 @@ kubectl config set-context --current --namespace kafka
 4. Create pods for openmessaging benchmark, wait till running
    helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 1.0.6
 
-### 3. Run test for RabbitMQ
-
-No installation, just install helm chart and forward to management tool
+### 3. Run test for RabbitMQ (option 1)
 
 1. Access benchmark driver CLI
    kubectl exec -ti benchmark-driver -- //bin/bash
@@ -252,13 +253,14 @@ No installation, just install helm chart and forward to management tool
    bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/Throughput_tests/0K-rate-100B-size-1-topic-1-partitions-4p-4c.yaml </br>
    bin/benchmark --drivers driver-rabbitmq/new_rabbitmq.yaml --workers $WORKERS workloads/tests/1-topic-1-partitions-1kb-4p-4c-50k.yaml
 
-### 3. Run Kafka driver
+### 3. Run Kafka driver (option 2)
 
 1. Access benchmark driver CLI
    kubectl exec -ti benchmark-driver -- //bin/bash
 2. Check directory and adjust command before running tests. See tests.txt </br>
    bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-1-partition-1kb.yaml </br>
    bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-100-partitions-1kb-4p-4c-200k.yaml
+
 
 ### 4. Copy the result from pod to current directory
 
@@ -268,11 +270,14 @@ kubectl cp kafka/benchmark-driver:<sourcefile> <targetfile>
 Example:
 kubectl cp default/benchmark-driver:1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json 1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json
 
-### 5. Uninstall set up for Kafka tests
+
+### 5. Reset RabbitMQ (option 1)
+Exchange and queues needs to be deleted from the management tool before running new test to clean broker
+
+### 5. Uninstall set up for Kafka tests (option 2)
 
 kubectl delete -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 
 helm uninstall benchmark
 
-### 5. Exchange and queues needs to be deleted from the management tool
 
