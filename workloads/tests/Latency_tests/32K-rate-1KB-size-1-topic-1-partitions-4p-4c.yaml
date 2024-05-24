@@ -12,21 +12,21 @@
 # limitations under the License.
 #
 
+name: 32000B rate 4 producers and 4 consumers on 1 topic / 1 partition
 
-name: RabbitMQ
-driverClass: io.openmessaging.benchmark.driver.rabbitmq.RabbitMqBenchmarkDriver
+topics: 1
+partitionsPerTopic: 1
 
-# RabbitMq client specific configurations
+keyDistributor: "NO_KEY"
+messageSize: 1024
+payloadFile: "payload/payload-1kB.data"
 
-producerCreationDelay: 100
-producerCreationBatchSize: 5
-consumerCreationDelay: 100
-consumerCreationBatchSize: 5
+subscriptionsPerTopic: 1
+consumerPerSubscription: 4
+producersPerTopic: 4
 
-amqpUris:
-# AKS
-  - amqp://guest:guest@definition:5672/
-## Minikube
-#  - amqp://default_user_B9f8A_FypV3yAYSGN47:Ve4Sfr4ZAvsN4TPIUVZD7NPxS_Nh06ie@definition:5672/
-messagePersistence: false
-queueType: QUORUM
+# Discover max-sustainable rate
+producerRate: 32000
+
+consumerBacklogSizeGB: 0
+testDurationMinutes: 5

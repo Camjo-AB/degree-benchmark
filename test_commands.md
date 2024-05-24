@@ -221,14 +221,16 @@ bin/kafka-topics.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --list
 
 ----------------------------------------------------
 
-### Prerequisite: Set up kubernetes context 
+### Prerequisite: Set up kubernetes context
 
 Change to the namespace depending on broker to be tested </br>
 kubectl config set-context --current --namespace default
 kubectl config set-context --current --namespace kafka
 
 ### 1. RabbitMQ set up (option 1)
+
 No installation, just install helm chart and forward to management tool
+helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 0.0.1
 
 ### 1. Install set up for Kafka tests (option 2)
 
@@ -242,7 +244,7 @@ No installation, just install helm chart and forward to management tool
    kubectl apply -f ./deployment/kubernetes/kafka/kafka-bridge.yaml
 
 4. Create pods for openmessaging benchmark, wait till running
-   helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 1.0.6
+   helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 1.0.0
 
 ### 2. Run test for RabbitMQ (option 1)
 
@@ -261,7 +263,6 @@ No installation, just install helm chart and forward to management tool
    bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-1-partition-1kb.yaml </br>
    bin/benchmark --drivers driver-kafka/kafka-exactly-once-rep3.yaml --workers $WORKERS workloads/Kafka/1-topic-100-partitions-1kb-4p-4c-200k.yaml
 
-
 ### 3. Copy the result from pod to current directory
 
 kubectl cp default/benchmark-driver:<sourcefile> <targetfile> </br>
@@ -270,18 +271,15 @@ kubectl cp kafka/benchmark-driver:<sourcefile> <targetfile>
 Example:
 kubectl cp default/benchmark-driver:1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json 1-topic-1-partition-1kb-RabbitMQ-2024-02-05-15-54-53.json
 
-
 ### 4. Reset RabbitMQ (option 1)
+
 Exchange and queues needs to be deleted from the management tool before running new test to clean broker
 
 helm uninstall benchmark
-
-
 
 ### 4. Uninstall set up for Kafka tests (option 2)
 
 kubectl delete -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
 
 helm uninstall benchmark
-
 
