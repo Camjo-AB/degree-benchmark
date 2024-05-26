@@ -148,6 +148,10 @@ helm install my-release bitnami/rabbitmq-cluster-operator
 
 kubectl apply -f ./deployment/kubernetes/rabbitmq/definition.yaml
 
+### Uninstall broker
+
+kubectl delete -f ./deployment/kubernetes/rabbitmq/definition.yaml
+
 ### Pod Authentication to Rabbitmq
 
 All username and password needs to be added to new_rabbitmq.yaml file to make access possible for worker pods</br>
