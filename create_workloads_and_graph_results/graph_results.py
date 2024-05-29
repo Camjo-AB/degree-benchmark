@@ -441,6 +441,24 @@ def read_data(file_path):
 
     return data
 
+# def read_data(file_path):
+#     results = []
+#     with open(file_path, 'r') as f:
+#         for line in f:
+#             results.append(json.loads(line))
+#     return results
+
+# def read_data(file_path):
+#     data_dict = {}
+#
+#     with open(file_path, 'r') as file:
+#         for line in file:
+#             line_data = json.loads(line.strip())
+#
+#             key = line_data['some_unique_key']
+#             data_dict[key] = line_data
+#     return data_dict
+
 
 # def read_data(file_path):
 #     # df = pd.read_json(file_path, lines=True)
@@ -448,9 +466,9 @@ def read_data(file_path):
 #         file_content = f.read()
 #         f.close()
 #     # f = open(file_path)
-#     file_content.replace('\n', '\r\n')
+#     "\n".join(file_content.splitlines())
 #     content = json.dumps(file_content)
-#     data = json.load(content)
+#     data = json.loads(content)
 #
 #     return data
 
