@@ -389,7 +389,7 @@ def show_plt(bar_width, df_in, x_indexes,
 # HERE START THE CREATION OF DATA DICTIONARY
 def data_dictionary_update(test_directory, filepath, data_dict, performance_data):
     variable_match = match_test_cast_to_variable(test_directory, filepath)
-    broker_match = re.search(r'(?<=4c-|8c-|2c-|6c-|1c-).+?(?=-2024)', filepath)
+    broker_match = re.search(r'(?<=4c-|8c-|2c-|6c-|3c-|5c-|1c-).+?(?=-2024)', filepath)
 
     if not isinstance(variable_match, str):
         variable_value = variable_match.group()
@@ -412,7 +412,7 @@ def match_test_cast_to_variable(test_directory, filepath):
             variable_match = re.search(r'(?<=Latency_tests\\).+?(?=-1-topic)', filepath)
             return variable_match
         case 'Partitions_tests':
-            variable_match = re.search(r'(?<=-topic-).+?(?=-4p-|-8p-|-2p-|-6p-|-1p-)', filepath)
+            variable_match = re.search(r'(?<=-topic-).+?(?=-4p-|-8p-|-2p-|-6p-|-1p-|-3p-|-5p-)', filepath)
             partition_match = re.search(r'(?<=Partitions_tests\\).+?-rate', filepath)
             partition_value = partition_match.group()
             variable_value = variable_match.group()
