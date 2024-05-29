@@ -12,7 +12,8 @@
 # limitations under the License.
 #
 
-import json
+# import json
+import simplejson as json
 import os
 import re
 import sys
@@ -436,6 +437,7 @@ def match_test_cast_to_variable(test_directory, filepath):
 
 
 def read_data(file_path):
+    print('Currently reading: ' + file_path)
     with open(file_path, 'r') as f:
         data = json.load(f)
 
@@ -497,7 +499,7 @@ def create_directory_data_dictionary(test_directory):
 
 if __name__ == '__main__':
     # Directories that include all the test data
-    # throughput_tests_dict, thrpt_filepath = create_directory_data_dictionary('Throughput_tests')
+    throughput_tests_dict, thrpt_filepath = create_directory_data_dictionary('Throughput_tests')
     # latency_tests_dict, ltcy_filepath = create_directory_data_dictionary('Latency_tests')
     prod_cons_tests_dict, prod_cons_filepath = create_directory_data_dictionary('Producer_Consumer_tests')
     # partitions_tests_dict, prt_filepath = create_directory_data_dictionary('Partitions_tests')

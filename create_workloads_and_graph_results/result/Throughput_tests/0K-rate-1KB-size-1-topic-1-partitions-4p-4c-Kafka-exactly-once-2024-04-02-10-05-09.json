@@ -1,3 +1,4 @@
+{
   "workload" : "0B rate 4 producers and 4 consumers on 1 topic / 1 partition",
   "driver" : "Kafka-exactly-once",
   "messageSize" : 1024,

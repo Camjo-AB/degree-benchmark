@@ -10,7 +10,7 @@ echo "password: $password"
 
 kubectl create secret docker-registry regcred --docker-server="https://index.docker.io/v1/" --docker-username="$username" --docker-password="$password" --docker-email="email"
 
-# Miscellaneous commands minikube & kubectl
+# Miscellaneous commands minikube & kubectlkbue
 
 ----------------------------------------------
 
@@ -68,6 +68,24 @@ kubectl port-forward controlcenter-0 9021:9021
 
 --drivers driver-rabbitmq/new_rabbitmq.yaml --workers http://localhost:8080,http://localhost:8080 workloads/1-topic-1-partition-1kb.yaml
 
+### Add workload manually
+Navigate to benchmark-driver </br>
+kubectl exec -ti benchmark-driver -- //bin/bash
+
+Copy file and rename it </br>
+cp 0K-rate-1KB-size-1-topic-1-partitions-1p-1c.yaml 0K-rate-1KB-size-1-topic-1-partitions-3p-3c.yaml
+
+Change number of consumer per subscription </br>
+sed -i 's/consumerPerSubscription: 1/consumerPerSubscription: 3/g' 0K-rate-1KB-size-1-topic-1-partitions-3p-3c.yaml
+
+-------------------------------------------------------
+Change number of producers per topic </br>
+sed -i 's/producersPerTopic: 1/producersPerTopic: 3/g' 0K-rate-1KB-size-1-topic-1-partitions-3p-3c.yaml
+
+--------------------------------------------------------
+Change producer rate from max till 1000 </br>
+sed -i 's/producerRate: 0/producerRate: 1000/g' 1K-rate-1KB-size-1-topic-1-partitions-3p-3c.yaml
+
 # Azure Kubernetes Services
 
 ----------------------------------------------
@@ -107,6 +125,22 @@ az acr login --name degree
 
 docker login Degree.azurecr.io </br>
 Fill in username "Degree" and password from ACR Access Key </br>
+
+### Build Maven Project
+
+mvn clean verify -DskipTests
+
+### Export Tarball
+
+export BENCHMARK_TARBALL=package/target/openmessaging-benchmark-0.0.1-SNAPSHOT-bin.tar.gz
+
+### Build Docker image
+
+docker build --build-arg BENCHMARK_TARBALL . -f docker/Dockerfile
+
+### Tag docker image
+
+docker tag <IMAGE_ID> Degree.azurecr.io/benchmark:main
 
 ### Push image to ACR
 
@@ -233,7 +267,7 @@ kubectl config set-context --current --namespace kafka
 
 ### 1. RabbitMQ set up (option 1)
 
-No installation, just install helm chart and forward to management tool
+Make sure operators and broker instance are installed, then install helm chart and forward to management tool
 helm install benchmark oci://$ACR_NAME.azurecr.io/helm/openmessaging-benchmark --version 0.0.1
 
 ### 1. Install set up for Kafka tests (option 2)
